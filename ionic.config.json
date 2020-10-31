@@ -1,0 +1,7 @@
+{
+  "name": "GamersExchange",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

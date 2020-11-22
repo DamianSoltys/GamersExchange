@@ -14,8 +14,8 @@ const _counterReducer = createReducer(
 
 const _counterReducerr = createReducer(
   count1State,
-  on(increment, (state) => ({ ...state, count: state.count1 + 1 })),
-  on(decrement, (state) => ({ ...state, count: state.count1 - 1 })),
+  on(increment, (state) => ({ ...state, count1: state.count1 + 1 })),
+  on(decrement, (state) => ({ ...state, count1: state.count1 - 1 })),
   on(reset, (state) => ({ ...state, count1: 0 }))
 );
 

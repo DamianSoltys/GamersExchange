@@ -12,7 +12,7 @@ import { LoginPageRoutingModule } from './loginPage-routing.module';
 @NgModule({
   declarations: [LoginPageComponent],
   entryComponents: [],
-  imports: [LoginPageRoutingModule],
+  imports: [LoginPageRoutingModule, IonicModule],
   providers: [StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
 })
 export class LoginPageModule {}

@@ -5,11 +5,11 @@ import { LoginPageComponent } from 'src/pages/loginPage/loginPage.component';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('../pages/loginPage/loginPage.module').then((m) => m.LoginPageModule),
+    component: LoginPageComponent,
   },
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class LoginPageRoutingModule {}

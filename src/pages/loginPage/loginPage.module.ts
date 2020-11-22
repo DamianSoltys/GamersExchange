@@ -6,16 +6,13 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { StoreModule } from '@ngrx/store';
-import { storeConfig } from 'src/shared/store/interfaces/store.interface';
+import { LoginPageComponent } from './loginPage.component';
+import { LoginPageRoutingModule } from './loginPage-routing.module';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [LoginPageComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, StoreModule.forRoot(storeConfig)],
+  imports: [LoginPageRoutingModule],
   providers: [StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
-  bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class LoginPageModule {}

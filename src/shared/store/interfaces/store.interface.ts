@@ -1,21 +1,27 @@
+import { ActionReducerMap } from '@ngrx/store';
+import { IUserFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
+import { IToastInterface } from 'src/shared/interfaces/toast.interface';
 import { UserEffects } from '../effects/user.effect';
-import { counterReducer, counterReducerr } from '../reducers/user.reducer';
+import { toastReducer } from '../reducers/toast.reducer';
+import { userReducer } from '../reducers/user.reducer';
 
 export const storeEffects = [UserEffects];
 export interface IInitialState {
-  count: ICountInterface;
-  count1: ICountInterface1;
+  userState: IUserState;
+  toastState: IToastState;
 }
 
-export interface ICountInterface {
-  count: number;
+export interface IToastState {
+  toastData: IToastInterface;
 }
 
-export interface ICountInterface1 {
-  count1: number;
+export interface IUserState {
+  users: IUserFirebaseCollection[];
+  loggedUser: IUserFirebaseCollection;
+  lastUserProfile: IUserFirebaseCollection;
 }
 
-export const storeConfig = {
-  count: counterReducer,
-  count1: counterReducerr,
+export const storeConfig: ActionReducerMap<IInitialState> = {
+  userState: userReducer,
+  toastState: toastReducer,
 };

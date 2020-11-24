@@ -16,9 +16,14 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { IonicStorageModule } from '@ionic/storage';
+import { LoginPageComponent } from 'src/shared/components/login/login.component';
+import { HeaderComponent } from 'src/shared/components/header/header.component';
+import { FooterComponent } from 'src/shared/components/footer/footer.component';
+import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard.service';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, LoginPageComponent, HeaderComponent, FooterComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -31,12 +36,19 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    IonicStorageModule.forRoot(),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
   ],
-  providers: [StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    StatusBar,
+    SplashScreen,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    AuthGuardService,
+    GuestGuardService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

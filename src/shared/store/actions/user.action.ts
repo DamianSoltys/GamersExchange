@@ -1,6 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 import { IUserFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
 
+export const CHECK_AUTH = createAction('[USER] Check Auth');
+export const CHECK_AUTH_SUCCESS = createAction('[USER] Check Auth Success', props<{ payload: boolean }>());
+export const CHECK_AUTH_ERROR = createAction('[USER] Check Auth Error', props<{ payload: Error }>());
+
 export const LOGIN_USER = createAction('[USER] Login User');
 export const LOGIN_USER_SUCCESS = createAction(
   '[USER] Login User Success',

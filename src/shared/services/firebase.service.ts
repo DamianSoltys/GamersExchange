@@ -3,15 +3,14 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { Store } from '@ngrx/store';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import {
   IExchangeFirebaseCollection,
   IProductFirebaseCollection,
   IUserFirebaseCollection,
 } from '../firebase/interfaces/firestore.interface';
 import { IInitialState } from '../store/interfaces/store.interface';
-import { LOGIN_USER_ERROR, REGISTER_USER_ERROR } from '../store/actions/user.action';
-import { catchError, map, take } from 'rxjs/operators';
+import { map, mergeAll, take } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
@@ -58,7 +57,8 @@ export class FirebaseService {
         };
 
         return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(id.toString()).set(user));
-      })
+      }),
+      mergeAll()
     );
   }
 
@@ -67,10 +67,10 @@ export class FirebaseService {
   }
 
   public logOut() {
-    this.firebaseAuthentication.signOut();
+    return from(this.firebaseAuthentication.signOut());
   }
 
-  public loginByGoogleProvider(): Observable<firebase.auth.UserCredential> {
+  public loginByGoogleProvider() {
     return this.loginByAuthProvider(new firebase.auth.GoogleAuthProvider());
   }
 

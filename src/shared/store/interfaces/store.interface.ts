@@ -19,6 +19,7 @@ export interface IUserState {
   users: IUserFirebaseCollection[];
   loggedUser: IUserFirebaseCollection;
   lastUserProfile: IUserFirebaseCollection;
+  isLoggedIn: boolean;
 }
 
 export const storeConfig: ActionReducerMap<IInitialState> = {

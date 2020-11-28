@@ -1,0 +1,29 @@
+<ion-tabs *ngIf="isLoggedIn$ | async">
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Główna</ion-label>
+      <ion-badge>6</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button tab="profile">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Profil</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="offer">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Oferty</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="search">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Szukaj</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="logOut()">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Wyloguj</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

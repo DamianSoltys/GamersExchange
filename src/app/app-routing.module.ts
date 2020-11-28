@@ -15,6 +15,21 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     loadChildren: () => import('../pages/homePage/homePage-module').then((m) => m.HomePageModule),
   },
+  {
+    path: 'profile',
+    canActivate: [AuthGuardService],
+    loadChildren: () => import('../pages/homePage/homePage-module').then((m) => m.HomePageModule),
+  },
+  {
+    path: 'offer',
+    canActivate: [AuthGuardService],
+    loadChildren: () => import('../pages/homePage/homePage-module').then((m) => m.HomePageModule),
+  },
+  {
+    path: 'search',
+    canActivate: [AuthGuardService],
+    loadChildren: () => import('../pages/homePage/homePage-module').then((m) => m.HomePageModule),
+  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

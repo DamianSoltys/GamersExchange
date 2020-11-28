@@ -13,7 +13,4 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit() {}
 
-  public logOut() {
-    this.store.dispatch(LOGOUT_USER());
-  }
 }

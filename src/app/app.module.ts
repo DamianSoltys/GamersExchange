@@ -21,9 +21,10 @@ import { LoginPageComponent } from 'src/shared/components/login/login.component'
 import { HeaderComponent } from 'src/shared/components/header/header.component';
 import { FooterComponent } from 'src/shared/components/footer/footer.component';
 import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard.service';
+import { MenuComponent } from 'src/shared/components/menu/menu.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginPageComponent, HeaderComponent, FooterComponent],
+  declarations: [AppComponent, LoginPageComponent, HeaderComponent, FooterComponent, MenuComponent],
   entryComponents: [],
   imports: [
     BrowserModule,

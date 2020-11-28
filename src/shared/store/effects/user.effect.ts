@@ -16,6 +16,9 @@ import {
   LOGOUT_USER,
   LOGOUT_USER_ERROR,
   LOGOUT_USER_SUCCESS,
+  MODIFY_USER_DATA,
+  MODIFY_USER_DATA_ERROR,
+  MODIFY_USER_DATA_SUCCESS,
   REGISTER_USER,
   REGISTER_USER_ERROR,
   REGISTER_USER_SUCCESS,
@@ -24,6 +27,7 @@ import firebase from 'firebase/app';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { UserService } from 'src/shared/services/user.service';
+import { ToastMessageEnum, ToastTypeEnum } from 'src/shared/interfaces/toast.interface';
 
 @Injectable()
 export class UserEffects {
@@ -34,12 +38,12 @@ export class UserEffects {
       switchMap(({ user }) => combineLatest([this.fireService.getUserByEmail(user.email), of(user)])),
       switchMap(([foundUser, user]: [QueryDocumentSnapshot<IUserFirebaseCollection>, firebase.User]) => {
         if (foundUser) {
-          return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ payload: foundUser.data() }));
+          return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ payload: foundUser.data() }),true,{type:ToastTypeEnum.SUCCESS,message:ToastMessageEnum.LOGIN_SUCCESS});
         } else {
           return this.errorService.handleResponse(REGISTER_USER({ payload: user.email }));
         }
       }),
-      catchError((error) => this.errorService.handleResponse(LOGIN_USER_ERROR({ payload: error })))
+      catchError((error) => this.errorService.handleResponse(LOGIN_USER_ERROR({ payload: error }),true,{type:ToastTypeEnum.ERROR,message:ToastMessageEnum.LOGIN_ERROR}))
     )
   );
 
@@ -61,9 +65,9 @@ export class UserEffects {
           userName: null,
         };
 
-        return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ payload: user }));
+        return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ payload: user }),true,{type:ToastTypeEnum.SUCCESS,message:ToastMessageEnum.LOGIN_SUCCESS});
       }),
-      catchError((error) => this.errorService.handleResponse(REGISTER_USER_ERROR({ payload: error })))
+      catchError((error) => this.errorService.handleResponse(REGISTER_USER_ERROR({ payload: error }),true,{type:ToastTypeEnum.ERROR,message:ToastMessageEnum.LOGIN_ERROR}))
     )
   );
 
@@ -71,8 +75,8 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(LOGOUT_USER),
       switchMap(() => this.fireService.logOut()),
-      switchMap(() => this.errorService.handleResponse(LOGOUT_USER_SUCCESS())),
-      catchError((error) => this.errorService.handleResponse(LOGOUT_USER_ERROR({ payload: error })))
+      switchMap(() => this.errorService.handleResponse(LOGOUT_USER_SUCCESS(),true,{type:ToastTypeEnum.SUCCESS,message:ToastMessageEnum.LOGOUT_SUCCESS})),
+      catchError((error) => this.errorService.handleResponse(LOGOUT_USER_ERROR({ payload: error }),true,{type:ToastTypeEnum.ERROR,message:ToastMessageEnum.LOGOUT_ERROR}))
     )
   );
 
@@ -81,7 +85,17 @@ export class UserEffects {
       ofType(CHECK_AUTH),
       switchMap(() => this.fireService.isLoggedIn$),
       switchMap((data) => this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ payload: !!data }))),
-      catchError((error) => this.errorService.handleResponse(CHECK_AUTH_ERROR({ payload: error })))
+      catchError((error) => this.errorService.handleResponse(CHECK_AUTH_ERROR({ payload: error }),true,{type:ToastTypeEnum.ERROR,message:ToastMessageEnum.AUTH_ERROR}))
+    )
+  );
+
+  changeUserData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(MODIFY_USER_DATA),
+      pluck('payload'),
+      switchMap((data:IUserFirebaseCollection) => combineLatest([this.fireService.modifyUserData(data),of(data)])),
+      switchMap(([res,data]) => this.errorService.handleResponse(MODIFY_USER_DATA_SUCCESS({payload:data}),true,{type:ToastTypeEnum.SUCCESS,message:ToastMessageEnum.MODIFY_USER_SUCCESS})),
+      catchError((error) => this.errorService.handleResponse(MODIFY_USER_DATA_ERROR({ payload: error }),true,{type:ToastTypeEnum.ERROR,message:ToastMessageEnum.MODIFY_USER_ERROR}))
     )
   );
 

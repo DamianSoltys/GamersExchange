@@ -32,6 +32,17 @@ export class FirebaseService {
     private firebaseAuthentication: AngularFireAuth
   ) {}
 
+  public modifyUserData(userData:IUserFirebaseCollection) {
+    return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userData.id.toString()).update(userData);
+  }
+
+  public getUserById(id: number) {
+    return this.firestore
+      .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('id', '==', id))
+      .get()
+      .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0])));
+  }
+
   public getUserByEmail(email: string) {
     return this.firestore
       .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('email', '==', email))

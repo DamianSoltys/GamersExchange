@@ -22,9 +22,17 @@ import { HeaderComponent } from 'src/shared/components/header/header.component';
 import { FooterComponent } from 'src/shared/components/footer/footer.component';
 import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard.service';
 import { MenuComponent } from 'src/shared/components/menu/menu.component';
+import { ToastComponent } from 'src/shared/components/toast/toast.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginPageComponent, HeaderComponent, FooterComponent, MenuComponent],
+  declarations: [
+    AppComponent,
+    LoginPageComponent,
+    HeaderComponent,
+    FooterComponent,
+    MenuComponent,
+    ToastComponent
+  ],
   entryComponents: [],
   imports: [
     BrowserModule,

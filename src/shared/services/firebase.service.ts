@@ -11,6 +11,7 @@ import {
 } from '../firebase/interfaces/firestore.interface';
 import { IInitialState } from '../store/interfaces/store.interface';
 import { map, mergeAll, take } from 'rxjs/operators';
+import { ILoginUser, IRegisterUser } from '../interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
@@ -32,7 +33,7 @@ export class FirebaseService {
     private firebaseAuthentication: AngularFireAuth
   ) {}
 
-  public modifyUserData(userData:IUserFirebaseCollection) {
+  public modifyUserData(userData: IUserFirebaseCollection) {
     return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userData.id.toString()).update(userData);
   }
 
@@ -43,14 +44,16 @@ export class FirebaseService {
       .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0])));
   }
 
-  public getUserByEmail(email: string):Observable<IUserFirebaseCollection> {
+  public getUserByEmail(email: string): Observable<IUserFirebaseCollection> {
     return this.firestore
       .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('email', '==', email))
       .get()
-      .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0].data() as unknown as IUserFirebaseCollection)));
+      .pipe(
+        map((snapshot) => (snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IUserFirebaseCollection)))
+      );
   }
 
-  public registerUser(email: string) {
+  public createUser({ email }: IRegisterUser) {
     return this.userCollection$.pipe(
       take(1),
       map((data) => {
@@ -73,8 +76,12 @@ export class FirebaseService {
     );
   }
 
-  public loginUserByCridentials(email: string, password: string) {
-    this.firebaseAuthentication.signInWithEmailAndPassword(email, password);
+  public loginUserByCridentials({ email, password }: ILoginUser) {
+    return from(this.firebaseAuthentication.signInWithEmailAndPassword(email, password));
+  }
+
+  public registerUserByCridentials({ email, password }: IRegisterUser) {
+    return from(this.firebaseAuthentication.createUserWithEmailAndPassword(email, password));
   }
 
   public logOut() {

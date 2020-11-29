@@ -15,7 +15,10 @@ import { Router } from '@angular/router';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  private userState$ = this.store.select('userState').pipe(distinctUntilChanged(state=>state.isLoggedIn),map((state: IUserState) => state.isLoggedIn));
+  private userState$ = this.store.select('userState').pipe(
+    distinctUntilChanged((state) => state.isLoggedIn),
+    map((state: IUserState) => state.isLoggedIn)
+  );
 
   constructor(
     private platform: Platform,
@@ -29,12 +32,11 @@ export class AppComponent {
 
   initializeApp() {
     this.userState$.pipe(skip(1)).subscribe((isLoggedIn) => {
-      isLoggedIn ? this.router.navigate(['/home']) : this.router.navigate(['/guest']);
+      isLoggedIn ? this.router.navigate(['/home']) : this.router.navigate(['/login']);
     });
 
-    this.store.dispatch(CHECK_AUTH());
-
     this.platform.ready().then(() => {
+      this.store.dispatch(CHECK_AUTH());
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });

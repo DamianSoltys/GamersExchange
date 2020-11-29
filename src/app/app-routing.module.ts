@@ -1,14 +1,20 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { LoginPageComponent } from 'src/shared/components/login/login.component';
+import { LoginComponent } from 'src/shared/components/login/login.component';
+import { RegisterComponent } from 'src/shared/components/register/register.component';
 import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard.service';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'guest', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
-    path: 'guest',
+    path: 'login',
     canActivate: [GuestGuardService],
-    component: LoginPageComponent,
+    component: LoginComponent,
+  },
+  {
+    path: 'register',
+    canActivate: [GuestGuardService],
+    component: RegisterComponent,
   },
   {
     path: 'home',

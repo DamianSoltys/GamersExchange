@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map } from 'rxjs/operators';
+import { ILoginUser, IRegisterUser } from 'src/shared/interfaces/user.interface';
 import { FirebaseService } from 'src/shared/services/firebase.service';
 import { CHECK_AUTH, LOGIN_USER, LOGOUT_USER } from 'src/shared/store/actions/user.action';
 import { IInitialState, IUserState } from 'src/shared/store/interfaces/store.interface';
@@ -11,12 +13,17 @@ import { IInitialState, IUserState } from 'src/shared/store/interfaces/store.int
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginPageComponent implements OnInit {
-  constructor(private store: Store<IInitialState>) {}
+export class LoginComponent implements OnInit {
+  public loginForm = this.fb.group({
+    email: [null, Validators.required],
+    password: [null, Validators.required],
+  });
+
+  constructor(private store: Store<IInitialState>, private fb: FormBuilder) {}
 
   ngOnInit() {}
 
-  public loginUser() {
-    this.store.dispatch(LOGIN_USER());
+  public loginUser(user: ILoginUser) {
+    this.store.dispatch(LOGIN_USER({ payload: user }));
   }
 }

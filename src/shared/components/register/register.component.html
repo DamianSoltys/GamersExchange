@@ -1,0 +1,36 @@
+<ion-content class="ion-padding register-component">
+  <form [formGroup]="registerForm">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Email *</ion-label>
+            <ion-input formControlName="email"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Hasło *</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Potwierdź hasło *</ion-label>
+            <ion-input type="password" formControlName="confirmPassword"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-button [disabled]="registerForm.invalid" expand="block" (click)="registerUser(registerForm.value)"
+      ><ion-icon name="logo-google" class="ion-padding-end"></ion-icon>Stwórz nowe konto</ion-button
+    >
+  </form>
+  <ion-button expand="block" routerLink="/login"
+    ><ion-icon name="logo-google" class="ion-padding-end"></ion-icon>Zaloguj się do aplikacji</ion-button
+  >
+</ion-content>

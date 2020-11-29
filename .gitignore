@@ -127,6 +127,7 @@ npm-debug.log*
 /.sourcemaps
 /.versions
 /.vscode
+/android
 /coverage
 /dist
 /node_modules

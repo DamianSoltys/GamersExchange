@@ -43,11 +43,11 @@ export class FirebaseService {
       .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0])));
   }
 
-  public getUserByEmail(email: string) {
+  public getUserByEmail(email: string):Observable<IUserFirebaseCollection> {
     return this.firestore
       .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('email', '==', email))
       .get()
-      .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0])));
+      .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0].data() as unknown as IUserFirebaseCollection)));
   }
 
   public registerUser(email: string) {

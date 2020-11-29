@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { IUserFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
 
 export const CHECK_AUTH = createAction('[USER] Check Auth');
-export const CHECK_AUTH_SUCCESS = createAction('[USER] Check Auth Success', props<{ payload: boolean }>());
+export const CHECK_AUTH_SUCCESS = createAction('[USER] Check Auth Success', props<{ isLogged: boolean, email: string }>());
 export const CHECK_AUTH_ERROR = createAction('[USER] Check Auth Error', props<{ payload: Error }>());
 
 export const LOGIN_USER = createAction('[USER] Login User');
@@ -30,7 +30,7 @@ export const GET_ALL_USERS_SUCCESS = createAction(
 );
 export const GET_ALL_USERS_ERROR = createAction('[USER] Get All Users Error', props<{ payload: Error }>());
 
-export const GET_USER = createAction('[USER] Get User', props<{ email: string }>());
+export const GET_USER = createAction('[USER] Get User', props<{ payload: string }>());
 export const GET_USER_SUCCESS = createAction('[USER] Get User Success', props<{ payload: IUserFirebaseCollection }>());
 export const GET_USER_ERROR = createAction('[USER] Get User Error', props<{ payload: Error }>());
 

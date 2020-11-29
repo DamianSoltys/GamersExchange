@@ -6,7 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { IInitialState, IUserState } from 'src/shared/store/interfaces/store.interface';
 import { Store } from '@ngrx/store';
 import { CHECK_AUTH } from 'src/shared/store/actions/user.action';
-import { map, skip } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, skip } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  private userState$ = this.store.select('userState').pipe(map((state: IUserState) => state.isLoggedIn));
+  private userState$ = this.store.select('userState').pipe(distinctUntilChanged(state=>state.isLoggedIn),map((state: IUserState) => state.isLoggedIn));
 
   constructor(
     private platform: Platform,

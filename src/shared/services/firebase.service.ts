@@ -31,10 +31,10 @@ export class FirebaseService {
     private store: Store<IInitialState>,
     private firestore: AngularFirestore,
     private firebaseAuthentication: AngularFireAuth
-  ) {}
+  ) { }
 
-  public modifyUserData(userData: IUserFirebaseCollection) {
-    return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userData.id.toString()).update(userData);
+  public modifyUserData(userData: IUserFirebaseCollection, userId: number) {
+    return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId.toString()).update(userData);
   }
 
   public getUserById(id: number) {

@@ -1,4 +1,9 @@
 .header-container {
     height: 50px;
     min-height: 50px;
+    display:flex;
+
+    p {
+        margin:0 ;
+    }
 }

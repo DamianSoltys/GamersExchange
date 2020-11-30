@@ -43,12 +43,11 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(LOGIN_USER),
       switchMap(({ payload }) => this.fireService.loginUserByCridentials(payload)),
-      switchMap(({ user: { email } }) =>
-        this.errorService.handleResponse(LOGIN_USER_SUCCESS({ payload: email }), true, {
-          type: ToastTypeEnum.SUCCESS,
-          message: ToastMessageEnum.LOGIN_SUCCESS,
-        })
-      ),
+      switchMap(({ user: { email } }) => this.fireService.getUserByEmail(email)),
+      switchMap(({ email, id }) => this.errorService.handleResponse(LOGIN_USER_SUCCESS({ email, id }), true, {
+        type: ToastTypeEnum.SUCCESS,
+        message: ToastMessageEnum.LOGIN_SUCCESS,
+      })),
       catchError((error) =>
         this.errorService.handleResponse(LOGIN_USER_ERROR({ payload: error }), true, {
           type: ToastTypeEnum.ERROR,
@@ -120,9 +119,8 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(CHECK_AUTH),
       switchMap(() => this.fireService.isLoggedIn$),
-      switchMap((data) =>
-        this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!data, email: data.email }))
-      ),
+      switchMap(({ email }) => email ? this.fireService.getUserByEmail(email) : of({ email: null, id: null })),
+      switchMap(({ email, id }) => this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!email, email, id }))),
       catchError((error) => this.errorService.handleResponse(CHECK_AUTH_ERROR({ payload: error })))
     )
   );
@@ -130,7 +128,7 @@ export class UserEffects {
   changeUserData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(MODIFY_USER_DATA),
-      switchMap(({ payload }) => combineLatest([this.fireService.modifyUserData(payload), of(payload)])),
+      switchMap(({ user, id }) => combineLatest([this.fireService.modifyUserData(user, id), of(user)])),
       switchMap(([res, data]) =>
         this.errorService.handleResponse(MODIFY_USER_DATA_SUCCESS({ payload: data }), true, {
           type: ToastTypeEnum.SUCCESS,
@@ -169,5 +167,5 @@ export class UserEffects {
     private navigation: NavController,
     private router: Router,
     private store: Store<IInitialState>
-  ) {}
+  ) { }
 }

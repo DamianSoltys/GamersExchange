@@ -2,10 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, filter } from 'rxjs/operators';
 import { IUserFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
 import { GET_USER, LOGOUT_USER, MODIFY_USER_DATA } from 'src/shared/store/actions/user.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
+import { PhotoSevice } from 'src/shared/services/photo.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -13,8 +14,12 @@ import { IInitialState } from 'src/shared/store/interfaces/store.interface';
   styleUrls: ['./profilePage.component.css'],
 })
 export class ProfilePageComponent {
-  public userData$ = this.store.select('userState').pipe(map(userState=>userState?.lastUserProfile));
-  public loggedUserEmail$ = this.store.select('userState').pipe(map(userState=>userState?.loggedUser?.email));
+  public userData$ = this.store.select('userState').pipe(
+    filter(data => data.lastUserProfile !== null), map(userState => userState?.lastUserProfile)
+  );
+  public loggedUser$ = this.store.select('userState').pipe(
+    map(userState => userState?.loggedUser)
+  );
   public toggleEdit = new BehaviorSubject(false);
   public profileForm = this.fb.group({
     firstName: [null],
@@ -27,30 +32,42 @@ export class ProfilePageComponent {
       country: [null],
       flatNo: [null],
       houseNo: [null],
-      postalCode:[null],
+      postalCode: [null],
       street: [null]
     })
   });
 
-  private loggedUserEmail:string;
+  private userData: IUserFirebaseCollection;
+  private loggedUser: IUserFirebaseCollection;
   private destroy$ = new Subject();
 
-  constructor(private store: Store<IInitialState>,private fb:FormBuilder) {
-    this.loggedUserEmail$.pipe(takeUntil(this.destroy$)).subscribe(email=>{
-      this.loggedUserEmail = email;
+  constructor(private store: Store<IInitialState>, private fb: FormBuilder, private photoService: PhotoSevice) {
+    this.loggedUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+      this.loggedUser = user;
     });
 
-    this.toggleEdit.pipe(takeUntil(this.destroy$)).subscribe(isEditable=>{
-      isEditable?this.profileForm.enable():this.profileForm.disable()
+    this.userData$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+      this.userData = user;
+      this.profileForm.patchValue(user);
+    });
+
+    this.toggleEdit.pipe(takeUntil(this.destroy$)).subscribe(isEditable => {
+      isEditable ? this.profileForm.enable() : this.profileForm.disable()
     });
   }
 
   ionViewWillEnter() {
-    // this.store.dispatch(GET_USER({payload:this.loggedUserEmail}));
-  }	
+    this.store.dispatch(GET_USER({ payload: this.loggedUser.email }));
+  }
 
-  public submitModifyData(user:IUserFirebaseCollection){
-    this.store.dispatch(MODIFY_USER_DATA({payload:user}));
+  public submitModifyData(user: IUserFirebaseCollection) {
+    this.store.dispatch(MODIFY_USER_DATA({ user, id: this.loggedUser?.id }));
+  }
+
+  public takePhoto() {
+    this.photoService.takePhoto().subscribe(photo => {
+      console.log(photo);
+    });
   }
 
   ionViewWillLeave() {

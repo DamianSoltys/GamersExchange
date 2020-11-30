@@ -5,12 +5,12 @@ import { ILoginUser, IRegisterUser } from 'src/shared/interfaces/user.interface'
 export const CHECK_AUTH = createAction('[USER] Check Auth');
 export const CHECK_AUTH_SUCCESS = createAction(
   '[USER] Check Auth Success',
-  props<{ isLogged: boolean; email: string }>()
+  props<{ isLogged: boolean; email: string, id: number }>()
 );
 export const CHECK_AUTH_ERROR = createAction('[USER] Check Auth Error', props<{ payload: Error }>());
 
 export const LOGIN_USER = createAction('[USER] Login User', props<{ payload: ILoginUser }>());
-export const LOGIN_USER_SUCCESS = createAction('[USER] Login User Success', props<{ payload: string }>());
+export const LOGIN_USER_SUCCESS = createAction('[USER] Login User Success', props<{ email: string, id: number }>());
 export const LOGIN_USER_ERROR = createAction('[USER] Login User Error', props<{ payload: Error }>());
 
 export const LOGOUT_USER = createAction('[USER] Logout User');
@@ -36,9 +36,9 @@ export const GET_USER = createAction('[USER] Get User', props<{ payload: string 
 export const GET_USER_SUCCESS = createAction('[USER] Get User Success', props<{ payload: IUserFirebaseCollection }>());
 export const GET_USER_ERROR = createAction('[USER] Get User Error', props<{ payload: Error }>());
 
-export const MODIFY_USER_DATA = createAction('[USER] Get All Users', props<{ payload: IUserFirebaseCollection }>());
+export const MODIFY_USER_DATA = createAction('[USER] Modify User Data', props<{ user: IUserFirebaseCollection, id: number }>());
 export const MODIFY_USER_DATA_SUCCESS = createAction(
-  '[USER] Get All Users Success',
+  '[USER] Modify User Data Success',
   props<{ payload: IUserFirebaseCollection }>()
 );
-export const MODIFY_USER_DATA_ERROR = createAction('[USER] Get All Users Error', props<{ payload: Error }>());
+export const MODIFY_USER_DATA_ERROR = createAction('[USER] Modify User Data Error', props<{ payload: Error }>());

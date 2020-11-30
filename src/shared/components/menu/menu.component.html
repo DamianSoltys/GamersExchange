@@ -1,6 +1,11 @@
 <ion-tabs>
   <ng-container *ngIf="isLoggedIn$ | async">
     <ion-tab-bar slot="bottom">
+      <ion-tab-button (click)="logOut()">
+        <ion-icon name="log-out"></ion-icon>
+        <ion-label>Wyloguj</ion-label>
+      </ion-tab-button>
+
       <ion-tab-button tab="home">
         <ion-icon name="home"></ion-icon>
         <ion-label>Głowna</ion-label>
@@ -19,11 +24,6 @@
       <ion-tab-button tab="search">
         <ion-icon name="home"></ion-icon>
         <ion-label>Szukaj</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button (click)="logOut()">
-        <ion-icon name="log-out"></ion-icon>
-        <ion-label>Wyloguj</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ng-container>

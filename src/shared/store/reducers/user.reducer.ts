@@ -22,17 +22,17 @@ export const initialState: IUserState = {
 
 export const userReducer = createReducer(
   initialState,
-  on(LOGOUT_USER_SUCCESS, (state, action) => ({ ...state, isLoggedIn: false })),
+  on(LOGOUT_USER_SUCCESS, (state, action) => ({ ...state, isLoggedIn: false, loggedUser: null })),
   on(LOGOUT_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),
   on(CHECK_AUTH_SUCCESS, (state, action) => ({
     ...state,
     isLoggedIn: action.isLogged,
-    loggedUser: { ...state.loggedUser, email: action.email },
+    loggedUser: { ...state.loggedUser, email: action.email, id: action.id },
   })),
-  on(CHECK_AUTH_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),
+  on(CHECK_AUTH_ERROR, (state, action) => ({ ...state, isLoggedIn: false, loggedUser: null })),
   on(LOGIN_USER_SUCCESS, (state, action) => ({
     ...state,
-    loggedUser: { ...state.loggedUser, email: action.payload },
+    loggedUser: { ...state.loggedUser, email: action.email, id: action.id },
     isLoggedIn: true,
   })),
   on(LOGIN_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),

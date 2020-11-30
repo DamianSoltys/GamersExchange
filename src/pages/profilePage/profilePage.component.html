@@ -4,7 +4,7 @@
       <span>logo</span>
     </div>
     <div>
-      <ion-button expand="block" (click)="addLogo()">Dodaj logo</ion-button>
+      <ion-button expand="block" (click)="takePhoto()">Dodaj logo</ion-button>
     </div>
   </div>
   <form [formGroup]="profileForm">
@@ -21,7 +21,7 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input disabled="true" value="{{(loggedUser$ | async).email}}"></ion-input>
+            <ion-input disabled="true" value="{{ (loggedUser$ | async).email }}"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -117,8 +117,12 @@
       </div>
     </ion-grid>
 
-    <ion-button class="ion-margin-vertical" *ngIf="toggleEdit.getValue()" expand="block"
-      (click)="submitModifyData(profileForm.value)">
+    <ion-button
+      class="ion-margin-vertical"
+      *ngIf="toggleEdit.getValue()"
+      expand="block"
+      (click)="submitModifyData(profileForm.value)"
+    >
       <ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Zaktualizuj dane
     </ion-button>
   </form>

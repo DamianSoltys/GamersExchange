@@ -44,12 +44,14 @@ export class UserEffects {
       ofType(LOGIN_USER),
       switchMap(({ payload }) => this.fireService.loginUserByCridentials(payload)),
       switchMap(({ user: { email } }) => this.fireService.getUserByEmail(email)),
-      switchMap(({ email, id }) => this.errorService.handleResponse(LOGIN_USER_SUCCESS({ email, id }), true, {
-        type: ToastTypeEnum.SUCCESS,
-        message: ToastMessageEnum.LOGIN_SUCCESS,
-      })),
-      catchError((error) =>
-        this.errorService.handleResponse(LOGIN_USER_ERROR({ payload: error }), true, {
+      switchMap(({ email, id }) =>
+        this.errorService.handleResponse(LOGIN_USER_SUCCESS({ email, id }), true, {
+          type: ToastTypeEnum.SUCCESS,
+          message: ToastMessageEnum.LOGIN_SUCCESS,
+        })
+      ),
+      catchError((error, caught) =>
+        this.errorService.handleError(LOGIN_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.LOGIN_ERROR,
         })
@@ -67,8 +69,8 @@ export class UserEffects {
           message: ToastMessageEnum.REGISTER_SUCCESS,
         })
       ),
-      catchError((error) =>
-        this.errorService.handleResponse(CREATE_USER_ERROR({ payload: error }), true, {
+      catchError((error, caught) =>
+        this.errorService.handleError(CREATE_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.REGISTER_ERROR,
         })
@@ -85,8 +87,8 @@ export class UserEffects {
 
         return this.errorService.handleResponse(REGISTER_USER_SUCCESS());
       }),
-      catchError((error) =>
-        this.errorService.handleResponse(REGISTER_USER_ERROR({ payload: error }), true, {
+      catchError((error, caught) =>
+        this.errorService.handleError(REGISTER_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.REGISTER_ERROR,
         })
@@ -106,8 +108,8 @@ export class UserEffects {
           message: ToastMessageEnum.LOGOUT_SUCCESS,
         });
       }),
-      catchError((error) =>
-        this.errorService.handleResponse(LOGOUT_USER_ERROR({ payload: error }), true, {
+      catchError((error, caught) =>
+        this.errorService.handleError(LOGOUT_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.LOGOUT_ERROR,
         })
@@ -119,9 +121,11 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(CHECK_AUTH),
       switchMap(() => this.fireService.isLoggedIn$),
-      switchMap(({ email }) => email ? this.fireService.getUserByEmail(email) : of({ email: null, id: null })),
-      switchMap(({ email, id }) => this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!email, email, id }))),
-      catchError((error) => this.errorService.handleResponse(CHECK_AUTH_ERROR({ payload: error })))
+      switchMap(({ email }) => (email ? this.fireService.getUserByEmail(email) : of({ email: null, id: null }))),
+      switchMap(({ email, id }) =>
+        this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!email, email, id }))
+      ),
+      catchError((error, caught) => this.errorService.handleError(CHECK_AUTH_ERROR({ payload: error }), caught))
     )
   );
 
@@ -135,8 +139,8 @@ export class UserEffects {
           message: ToastMessageEnum.MODIFY_USER_SUCCESS,
         })
       ),
-      catchError((error) =>
-        this.errorService.handleResponse(MODIFY_USER_DATA_ERROR({ payload: error }), true, {
+      catchError((error, caught) =>
+        this.errorService.handleError(MODIFY_USER_DATA_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.MODIFY_USER_ERROR,
         })
@@ -149,19 +153,15 @@ export class UserEffects {
       ofType(GET_USER),
       switchMap(({ payload }) => this.fireService.getUserByEmail(payload)),
       switchMap((data: IUserFirebaseCollection) => {
-        console.log(data)
+        console.log(data);
         return this.errorService.handleResponse(GET_USER_SUCCESS({ payload: data }));
-      }
-      ),
-      catchError((error) => {
-
-        console.log(error)
-        return this.errorService.handleResponse(GET_USER_ERROR({ payload: error }), true, {
+      }),
+      catchError((error, caught) => {
+        return this.errorService.handleError(GET_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.GET_DATA_ERROR,
-        })
-      }
-      )
+        });
+      })
     )
   );
 
@@ -172,5 +172,5 @@ export class UserEffects {
     private navigation: NavController,
     private router: Router,
     private store: Store<IInitialState>
-  ) { }
+  ) {}
 }

@@ -75,8 +75,6 @@ export class ProfilePageComponent {
     });
   }
 
-  public addLogo() {}
-
   ionViewWillLeave() {
     this.destroy$.next(true);
     this.destroy$.complete();

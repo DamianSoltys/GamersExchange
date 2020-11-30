@@ -39,5 +39,5 @@ export const userReducer = createReducer(
   on(REGISTER_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),
   on(GET_ALL_USERS_SUCCESS, (state, action) => ({ ...state, users: action.payload })),
   on(GET_USER_SUCCESS, (state, action) => ({ ...state, lastUserProfile: action.payload })),
-  on(MODIFY_USER_DATA_SUCCESS, (state, action) => ({ ...state, loggedUser: action.payload }))
+  on(MODIFY_USER_DATA_SUCCESS, (state, action) => ({ ...state, loggedUser: { ...state.loggedUser, ...action.payload }, lastUserProfile: { ...state.lastUserProfile, ...action.payload } }))
 );

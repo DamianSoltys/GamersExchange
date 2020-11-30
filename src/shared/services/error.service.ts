@@ -9,7 +9,7 @@ import { IInitialState } from '../store/interfaces/store.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ErrorService {
-  constructor(private store: Store<IInitialState>) {}
+  constructor(private store: Store<IInitialState>) { }
 
   public handleResponse(action: TypedAction<any>, showToast?: boolean, toastConfig?: IToastInterface) {
     if (showToast) {

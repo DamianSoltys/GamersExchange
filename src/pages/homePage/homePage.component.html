@@ -1,8 +1,10 @@
 <ion-content class="ion-padding">
   <div class="helper ion-text-center">
-    <p *ngIf="(userName$ | async); else updateProfile">Witaj {{userName$ | async}}, możesz zacząć od znalezienie odpowiedniej oferty wymiany.</p>
+    <p *ngIf="(userName$ | async); else updateProfile">Witaj {{userName$ | async}}, możesz zacząć od znalezienia
+      odpowiedniej oferty wymiany.</p>
     <ng-template #updateProfile>
-      <p>Witaj w aplikacji GamerzExchange, możesz rozpocząć od uzupełnienia swoich danych konta klikająć na link poniżej.</p>
+      <p>Witaj w aplikacji GamerzExchange, możesz rozpocząć od uzupełnienia swoich danych konta klikająć na link
+        poniżej.</p>
       <a routerLink="/profile">Przejdź do profilu</a>
     </ng-template>
   </div>

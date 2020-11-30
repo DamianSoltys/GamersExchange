@@ -148,14 +148,19 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(GET_USER),
       switchMap(({ payload }) => this.fireService.getUserByEmail(payload)),
-      switchMap((data: IUserFirebaseCollection) =>
-        this.errorService.handleResponse(GET_USER_SUCCESS({ payload: data }))
+      switchMap((data: IUserFirebaseCollection) => {
+        console.log(data)
+        return this.errorService.handleResponse(GET_USER_SUCCESS({ payload: data }));
+      }
       ),
-      catchError((error) =>
-        this.errorService.handleResponse(GET_USER_ERROR({ payload: error }), true, {
+      catchError((error) => {
+
+        console.log(error)
+        return this.errorService.handleResponse(GET_USER_ERROR({ payload: error }), true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.GET_DATA_ERROR,
         })
+      }
       )
     )
   );

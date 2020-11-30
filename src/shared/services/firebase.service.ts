@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { Store } from '@ngrx/store';
-import { from, Observable } from 'rxjs';
+import { from, Observable, forkJoin } from 'rxjs';
 import {
   IExchangeFirebaseCollection,
   IProductFirebaseCollection,
@@ -12,6 +12,7 @@ import {
 import { IInitialState } from '../store/interfaces/store.interface';
 import { map, mergeAll, take } from 'rxjs/operators';
 import { ILoginUser, IRegisterUser } from '../interfaces/user.interface';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
@@ -30,8 +31,25 @@ export class FirebaseService {
   constructor(
     private store: Store<IInitialState>,
     private firestore: AngularFirestore,
-    private firebaseAuthentication: AngularFireAuth
+    private firebaseAuthentication: AngularFireAuth,
+    private fireStorage: AngularFireStorage
   ) { }
+
+  public saveProfileLogo(file: Blob, id: number) {
+    const fileRef = this.fireStorage.ref(`${id}/profile/logo`);
+
+    return this.fireStorage.upload(`${id}/profile/logo`, file).snapshotChanges();
+  }
+
+  public saveProductImages(files: Blob[], userId: number, productId: number) {
+    let fileObs = [];
+
+    files.forEach((file, index) => {
+      fileObs.push(this.fireStorage.upload(`${userId}/product/${productId}/${index}`, file).snapshotChanges());
+    });
+
+    return forkJoin(fileObs);
+  }
 
   public modifyUserData(userData: IUserFirebaseCollection, userId: number) {
     return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId.toString()).update(userData);

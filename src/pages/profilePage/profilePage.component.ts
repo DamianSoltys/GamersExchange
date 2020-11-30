@@ -52,11 +52,11 @@ export class ProfilePageComponent {
     });
 
     this.toggleEdit.pipe(takeUntil(this.destroy$)).subscribe(isEditable => {
-      isEditable ? this.profileForm.enable() : this.profileForm.disable()
+      isEditable ? setTimeout(() => this.profileForm.enable(), 0) : setTimeout(() => this.profileForm.disable(), 0);
     });
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.store.dispatch(GET_USER({ payload: this.loggedUser.email }));
   }
 

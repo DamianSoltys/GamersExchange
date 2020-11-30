@@ -13,6 +13,7 @@ import { IInitialState } from '../store/interfaces/store.interface';
 import { map, mergeAll, take } from 'rxjs/operators';
 import { ILoginUser, IRegisterUser } from '../interfaces/user.interface';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
@@ -30,22 +31,34 @@ export class FirebaseService {
 
   constructor(
     private store: Store<IInitialState>,
+    private http: HttpClient,
     private firestore: AngularFirestore,
     private firebaseAuthentication: AngularFireAuth,
     private fireStorage: AngularFireStorage
-  ) { }
+  ) {}
 
   public saveProfileLogo(file: Blob, id: number) {
-    const fileRef = this.fireStorage.ref(`${id}/profile/logo`);
+    const fileRef = this.fireStorage.ref(`images/user/${id}/profile/logo`);
 
-    return this.fireStorage.upload(`${id}/profile/logo`, file).snapshotChanges();
+    return this.fireStorage.upload(`images/user/${id}/profile/logo`, file).snapshotChanges();
+  }
+
+  public getProfileLogo(id: number) {
+    const fileRef = this.fireStorage.ref(`images/user/${id}/profile/logo`);
+
+    return fileRef.getDownloadURL().pipe(
+      map((url) => this.http.get(url, { responseType: 'blob' })),
+      mergeAll()
+    );
   }
 
   public saveProductImages(files: Blob[], userId: number, productId: number) {
     let fileObs = [];
 
     files.forEach((file, index) => {
-      fileObs.push(this.fireStorage.upload(`${userId}/product/${productId}/${index}`, file).snapshotChanges());
+      fileObs.push(
+        this.fireStorage.upload(`images/user/${userId}/product/${productId}/photo_${index}`, file).snapshotChanges()
+      );
     });
 
     return forkJoin(fileObs);

@@ -14,9 +14,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-import {
-  AngularFireStorageModule,
-} from "@angular/fire/storage";
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { IonicStorageModule } from '@ionic/storage';
@@ -27,6 +25,7 @@ import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard
 import { MenuComponent } from 'src/shared/components/menu/menu.component';
 import { ToastComponent } from 'src/shared/components/toast/toast.component';
 import { RegisterComponent } from 'src/shared/components/register/register.component';
+import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -42,6 +41,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   entryComponents: [],
   imports: [
     BrowserModule,
+    HttpClientModule,
     ReactiveFormsModule,
     IonicModule.forRoot({
       mode: 'md',
@@ -68,4 +68,4 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

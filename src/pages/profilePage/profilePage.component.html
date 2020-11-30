@@ -1,7 +1,7 @@
 <ion-content class="ion-padding">
   <div>
     <div class="ion-text-center">
-      <span>logo</span>
+      <ion-img class="img-element" *ngIf="trustedCapturedPhoto" [src]="trustedCapturedPhoto"></ion-img>
     </div>
     <div>
       <ion-button expand="block" (click)="takePhoto()">Dodaj logo</ion-button>

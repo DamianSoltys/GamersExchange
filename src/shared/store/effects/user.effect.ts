@@ -44,12 +44,14 @@ export class UserEffects {
       ofType(LOGIN_USER),
       switchMap(({ payload }) => this.fireService.loginUserByCridentials(payload)),
       switchMap(({ user: { email } }) => this.fireService.getUserByEmail(email)),
-      switchMap(({ email, id }) =>
-        this.errorService.handleResponse(LOGIN_USER_SUCCESS({ email, id }), true, {
+      switchMap(({ email, id }) => {
+        this.navigation.navigateRoot(['/home']);
+
+        return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ email, id }), true, {
           type: ToastTypeEnum.SUCCESS,
           message: ToastMessageEnum.LOGIN_SUCCESS,
-        })
-      ),
+        });
+      }),
       catchError((error, caught) =>
         this.errorService.handleError(LOGIN_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,

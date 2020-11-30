@@ -31,9 +31,9 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.userState$.pipe(skip(1)).subscribe((isLoggedIn) => {
-      isLoggedIn ? this.router.navigate(['/home']) : this.router.navigate(['/login']);
-    });
+    // this.userState$.pipe(skip(1)).subscribe((isLoggedIn) => {
+    //   isLoggedIn ? this.router.navigate(['/home']) : this.router.navigate(['/login']);
+    // });
 
     this.platform.ready().then(() => {
       this.store.dispatch(CHECK_AUTH());

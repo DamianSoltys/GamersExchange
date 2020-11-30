@@ -6,97 +6,113 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-        <ion-item>
-          <ion-label position="floating">Nazwa profilowa</ion-label>
-          <ion-input formControlName="userName"></ion-input>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Nazwa profilowa</ion-label>
+            <ion-input formControlName="userName"></ion-input>
+          </ion-item>
         </ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col>
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input disabled="true" value="{{loggedUserEmail$ | async}}"></ion-input>
+            <ion-input disabled="true" value="{{ loggedUserEmail$ | async }}"></ion-input>
           </ion-item>
-          </ion-col>
-      </ion-row>
-      <ion-row>
-       <ion-col>
-        <ion-item>
-          <ion-label position="floating">Imie</ion-label>
-          <ion-input formControlName="firstName"></ion-input>
-        </ion-item>
-       </ion-col>
-       <ion-col>
-        <ion-item>
-          <ion-label position="floating">Nazwisko</ion-label>
-          <ion-input formControlName="surname"></ion-input>
-        </ion-item>
-       </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-        <ion-item>
-          <ion-label position="floating">Aktualne platformy</ion-label>
-          <ion-input formControlName="platform"></ion-input>
-        </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-        <ion-item>
-          <ion-label position="floating">Zainteresowania</ion-label>
-          <ion-input formControlName="interests"></ion-input>
-        </ion-item>
+          <ion-item>
+            <ion-label position="floating">Imie</ion-label>
+            <ion-input formControlName="firstName"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Nazwisko</ion-label>
+            <ion-input formControlName="surname"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Aktualne platformy</ion-label>
+            <ion-input formControlName="platform"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Zainteresowania</ion-label>
+            <ion-input formControlName="interests"></ion-input>
+          </ion-item>
         </ion-col>
       </ion-row>
       <div formGroupName="address">
-       <ion-row>
-        <ion-col>
-        <ion-item>
-          <ion-label position="floating">Miasto</ion-label>
-          <ion-input formControlName="city"></ion-input>
-        </ion-item>
-        </ion-col>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Kod pocztowy</ion-label>
-            <ion-input formControlName="postalCode"></ion-input>
-          </ion-item>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">Miasto</ion-label>
+              <ion-input formControlName="city"></ion-input>
+            </ion-item>
           </ion-col>
-       </ion-row>
-       <ion-row>
-        <ion-col>
-        <ion-item>
-          <ion-label position="floating">Numer domu</ion-label>
-          <ion-input formControlName="houseNo"></ion-input>
-        </ion-item>
-        </ion-col>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Numer mieszkania</ion-label>
-            <ion-input formControlName="flatNo"></ion-input>
-          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">Kod pocztowy</ion-label>
+              <ion-input formControlName="postalCode"></ion-input>
+            </ion-item>
           </ion-col>
-       </ion-row>
-       <ion-row>
-        <ion-col>
-        <ion-item>
-          <ion-label position="floating">Ulica</ion-label>
-          <ion-input formControlName="street"></ion-input>
-        </ion-item>
-        </ion-col>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Kraj</ion-label>
-            <ion-input formControlName="country"></ion-input>
-          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">Numer domu</ion-label>
+              <ion-input formControlName="houseNo"></ion-input>
+            </ion-item>
           </ion-col>
-       </ion-row>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">Numer mieszkania</ion-label>
+              <ion-input formControlName="flatNo"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">Ulica</ion-label>
+              <ion-input formControlName="street"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item>
+              <ion-label position="floating">Kraj</ion-label>
+              <ion-input formControlName="country"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
       </div>
     </ion-grid>
 
-    <ion-button class="ion-margin-vertical" *ngIf="toggleEdit.getValue()" expand="block" (click)="submitModifyData(profileForm.value)"
-    ><ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Zaktualizuj dane</ion-button>
+    <ion-button
+      class="ion-margin-vertical"
+      *ngIf="toggleEdit.getValue()"
+      expand="block"
+      (click)="submitModifyData(profileForm.value)"
+      ><ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Zaktualizuj dane</ion-button
+    >
   </form>
   <ion-button class="ion-margin-vertical" expand="block" (click)="toggleEdit.next(!toggleEdit.getValue())"
-    ><ion-icon name="toggle-sharp" class="ion-margin-end"></ion-icon>Edytuj</ion-button>
+    ><ion-icon name="toggle-sharp" class="ion-margin-end"></ion-icon>Edytuj</ion-button
+  >
 </ion-content>

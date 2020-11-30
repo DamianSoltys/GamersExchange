@@ -35,6 +35,7 @@ import { UserService } from 'src/shared/services/user.service';
 import { ToastMessageEnum, ToastTypeEnum } from 'src/shared/interfaces/toast.interface';
 import { Store } from '@ngrx/store';
 import { IInitialState } from '../interfaces/store.interface';
+import { NavController } from '@ionic/angular';
 
 @Injectable()
 export class UserEffects {
@@ -98,12 +99,14 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(LOGOUT_USER),
       switchMap(() => this.fireService.logOut()),
-      switchMap(() =>
-        this.errorService.handleResponse(LOGOUT_USER_SUCCESS(), true, {
+      switchMap(() => {
+        this.navigation.navigateRoot(['/login']);
+
+        return this.errorService.handleResponse(LOGOUT_USER_SUCCESS(), true, {
           type: ToastTypeEnum.SUCCESS,
           message: ToastMessageEnum.LOGOUT_SUCCESS,
-        })
-      ),
+        });
+      }),
       catchError((error) =>
         this.errorService.handleResponse(LOGOUT_USER_ERROR({ payload: error }), true, {
           type: ToastTypeEnum.ERROR,
@@ -120,12 +123,7 @@ export class UserEffects {
       switchMap((data) =>
         this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!data, email: data.email }))
       ),
-      catchError((error) =>
-        this.errorService.handleResponse(CHECK_AUTH_ERROR({ payload: error }), true, {
-          type: ToastTypeEnum.ERROR,
-          message: ToastMessageEnum.AUTH_ERROR,
-        })
-      )
+      catchError((error) => this.errorService.handleResponse(CHECK_AUTH_ERROR({ payload: error })))
     )
   );
 
@@ -168,7 +166,7 @@ export class UserEffects {
     private actions$: Actions,
     private fireService: FirebaseService,
     private errorService: ErrorService,
-    private userService: UserService,
+    private navigation: NavController,
     private router: Router,
     private store: Store<IInitialState>
   ) {}

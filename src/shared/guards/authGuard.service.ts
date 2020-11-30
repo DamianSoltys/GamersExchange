@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, map, skip, take, takeWhile } from 'rxjs/operators';
@@ -12,12 +13,12 @@ export class AuthGuardService implements CanActivate {
     filter((data) => data !== null)
   );
 
-  constructor(public router: Router, private store: Store<IInitialState>) {}
+  constructor(private navigate: NavController, private store: Store<IInitialState>) {}
   canActivate(): Observable<boolean> {
     return this.userState$.pipe(
       map((isLoggedIn) => {
         if (!isLoggedIn) {
-          this.router.navigate(['/login']);
+          this.navigate.navigateRoot(['/login']);
         }
 
         return isLoggedIn;
@@ -33,12 +34,12 @@ export class GuestGuardService implements CanActivate {
     filter((data) => data !== null)
   );
 
-  constructor(public router: Router, private store: Store<IInitialState>) {}
+  constructor(private navigate: NavController, private store: Store<IInitialState>) {}
   canActivate(): Observable<boolean> {
     return this.userState$.pipe(
       map((isLoggedIn) => {
         if (isLoggedIn) {
-          this.router.navigate(['/home']);
+          this.navigate.navigateRoot(['/home']);
         }
 
         return true;

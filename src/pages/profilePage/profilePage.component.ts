@@ -3,7 +3,11 @@ import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { map, takeUntil, filter } from 'rxjs/operators';
-import { IUserFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
+import {
+  InterestsEnum,
+  IUserFirebaseCollection,
+  PlatformEnum,
+} from 'src/shared/firebase/interfaces/firestore.interface';
 import { GET_USER, LOGOUT_USER, MODIFY_USER_DATA } from 'src/shared/store/actions/user.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 import { PhotoSevice } from 'src/shared/services/photo.service';
@@ -15,11 +19,10 @@ import { PhotoSevice } from 'src/shared/services/photo.service';
 })
 export class ProfilePageComponent {
   public userData$ = this.store.select('userState').pipe(
-    filter(data => data.lastUserProfile !== null), map(userState => userState?.lastUserProfile)
+    filter((data) => data.lastUserProfile !== null),
+    map((userState) => userState?.lastUserProfile)
   );
-  public loggedUser$ = this.store.select('userState').pipe(
-    map(userState => userState?.loggedUser)
-  );
+  public loggedUser$ = this.store.select('userState').pipe(map((userState) => userState?.loggedUser));
   public toggleEdit = new BehaviorSubject(false);
   public profileForm = this.fb.group({
     firstName: [null],
@@ -33,25 +36,27 @@ export class ProfilePageComponent {
       flatNo: [null],
       houseNo: [null],
       postalCode: [null],
-      street: [null]
-    })
+      street: [null],
+    }),
   });
+  public platformOptions = Object.values(PlatformEnum);
+  public interestsOptions = Object.values(InterestsEnum);
 
   private userData: IUserFirebaseCollection;
   private loggedUser: IUserFirebaseCollection;
   private destroy$ = new Subject();
 
   constructor(private store: Store<IInitialState>, private fb: FormBuilder, private photoService: PhotoSevice) {
-    this.loggedUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+    this.loggedUser$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       this.loggedUser = user;
     });
 
-    this.userData$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+    this.userData$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       this.userData = user;
       this.profileForm.patchValue(user);
     });
 
-    this.toggleEdit.pipe(takeUntil(this.destroy$)).subscribe(isEditable => {
+    this.toggleEdit.pipe(takeUntil(this.destroy$)).subscribe((isEditable) => {
       isEditable ? setTimeout(() => this.profileForm.enable(), 0) : setTimeout(() => this.profileForm.disable(), 0);
     });
   }
@@ -65,10 +70,12 @@ export class ProfilePageComponent {
   }
 
   public takePhoto() {
-    this.photoService.takePhoto().subscribe(photo => {
+    this.photoService.takePhoto().subscribe((photo) => {
       console.log(photo);
     });
   }
+
+  public addLogo() {}
 
   ionViewWillLeave() {
     this.destroy$.next(true);

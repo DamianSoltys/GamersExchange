@@ -1,7 +1,12 @@
 <ion-content class="ion-padding">
-  <ion-item class="ion-text-center">
-    <ion-label>Logo</ion-label>
-  </ion-item>
+  <div>
+    <div class="ion-text-center">
+      <span>logo</span>
+    </div>
+    <div>
+      <ion-button expand="block" (click)="addLogo()">Dodaj logo</ion-button>
+    </div>
+  </div>
   <form [formGroup]="profileForm">
     <ion-grid>
       <ion-row>
@@ -40,7 +45,11 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Aktualne platformy</ion-label>
-            <ion-input formControlName="platform"></ion-input>
+            <ion-select interface="popover" formControlName="platform" multiple>
+              <ion-select-option *ngFor="let platform of platformOptions" [value]="platform">{{
+                platform
+              }}</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -48,7 +57,11 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Zainteresowania</ion-label>
-            <ion-input formControlName="interests"></ion-input>
+            <ion-select interface="popover" formControlName="interests" multiple>
+              <ion-select-option *ngFor="let interest of interestsOptions" [value]="interest">{{
+                interest
+              }}</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>

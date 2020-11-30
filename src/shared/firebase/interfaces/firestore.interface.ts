@@ -63,10 +63,21 @@ export enum StateEnum {
 
 export enum PlatformEnum {
   PC = 'PC',
-  CONSOLE = 'CONSOLE',
+  CONSOLE = 'KONSOLA',
   PS5 = 'PS5',
   PS4 = 'PS4',
   NINTENDO = 'NINTENDO',
   PS = 'PS',
   PEGASUS = 'PEGASUS',
+}
+
+export enum InterestsEnum {
+  ADVENTURES = 'PODRÓŻE',
+  GAMES = 'GRY',
+  MUSIC = 'MUZYKA',
+  ART = 'SZTUKA',
+  CARS = 'SAMOCHODY',
+  PROGRAMMING = 'PROGRAMOWANIE',
+  PEOPLE = 'LUDZIE',
+  NATURE = 'NATURA',
 }

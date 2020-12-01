@@ -89,6 +89,29 @@ export class FirebaseService {
       );
   }
 
+  public addProduct(product: IProductFirebaseCollection) {
+    return this.productCollection$.pipe(
+      take(1),
+      map((data) => {
+        const id = data?.length + 1;
+
+        return from(this.firestore.collection<IProductFirebaseCollection>('Products').doc(id.toString()).set(product));
+      }),
+      mergeAll()
+    );
+  }
+
+  public editProduct(product: IProductFirebaseCollection) {
+    return this.firestore
+      .collection<IProductFirebaseCollection>('Products')
+      .doc(product.userId.toString())
+      .update(product);
+  }
+
+  public deleteProductById(id: number) {
+    return this.firestore.collection<IProductFirebaseCollection>('Products').doc(id.toString()).delete();
+  }
+
   // USER METHODS SECTION
   public modifyUserData(userData: IUserFirebaseCollection, userId: number) {
     return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId.toString()).update(userData);

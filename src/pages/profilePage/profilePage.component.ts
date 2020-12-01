@@ -1,4 +1,4 @@
-import { Component, SecurityContext } from '@angular/core';
+import { Component, OnDestroy, OnInit, SecurityContext } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -8,18 +8,28 @@ import {
   IUserFirebaseCollection,
   PlatformEnum,
 } from 'src/shared/firebase/interfaces/firestore.interface';
-import { GET_USER, MODIFY_USER_DATA } from 'src/shared/store/actions/user.action';
+import {
+  GET_USER,
+  GET_USER_LOGO,
+  GET_USER_LOGO_SUCCESS,
+  GET_USER_SUCCESS,
+  MODIFY_USER_DATA,
+  SET_USER_LOGO,
+  SET_USER_LOGO_SUCCESS,
+} from 'src/shared/store/actions/user.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
-import { PhotoSevice } from 'src/shared/services/photo.service';
+import { PhotoService } from 'src/shared/services/photo.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FirebaseService } from 'src/shared/services/firebase.service';
+import { Actions, ofType } from '@ngrx/effects';
+import { MainService } from 'src/shared/services/main.service';
 
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profilePage.component.html',
   styleUrls: ['./profilePage.component.css'],
 })
-export class ProfilePageComponent {
+export class ProfilePageComponent implements OnDestroy {
   public userData$ = this.store.select('userState').pipe(
     filter((data) => data.lastUserProfile !== null),
     map((userState) => userState?.lastUserProfile)
@@ -53,10 +63,17 @@ export class ProfilePageComponent {
   constructor(
     private store: Store<IInitialState>,
     private fb: FormBuilder,
-    private fireService: FirebaseService,
-    private photoService: PhotoSevice,
-    private sanitizer: DomSanitizer
+    private actions$: Actions,
+    private mainService: MainService,
+    private photoService: PhotoService
   ) {
+    this.actions$
+      .pipe(takeUntil(this.destroy$), ofType(GET_USER_LOGO_SUCCESS, SET_USER_LOGO_SUCCESS))
+      .subscribe(({ payload }) => {
+        this.capturedPhoto = payload;
+        this.trustedCapturedPhoto = photoService.formatToSafeURL(payload);
+      });
+
     this.loggedUser$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       this.loggedUser = user;
     });
@@ -72,39 +89,23 @@ export class ProfilePageComponent {
   }
 
   ionViewDidEnter() {
-    this.store.dispatch(GET_USER({ payload: this.loggedUser.email }));
-    //TODO CHANGE TO ACTION
-    this.setProfileLogo(this.fireService.getProfileLogo(this.loggedUser.id));
+    if (!this.capturedPhoto) {
+      this.mainService.dispatch(GET_USER_LOGO({ payload: this.loggedUser.id }));
+    }
+
+    this.mainService.dispatch(GET_USER({ payload: this.loggedUser.email }));
   }
 
   public submitModifyData(user: IUserFirebaseCollection) {
-    this.store.dispatch(MODIFY_USER_DATA({ user, id: this.loggedUser?.id }));
+    this.mainService.dispatch(MODIFY_USER_DATA({ user, id: this.loggedUser.id }));
+    this.toggleEdit.next(false);
   }
 
   public takePhoto() {
-    this.setProfileLogo(this.photoService.takePhoto(), true);
+    this.mainService.dispatch(SET_USER_LOGO({ payload: this.loggedUser.id }));
   }
 
-  private formatToSafeURL(file: Blob) {
-    const url = URL.createObjectURL(file);
-    const trustedUrl = this.sanitizer.bypassSecurityTrustUrl(url);
-
-    return this.sanitizer.sanitize(SecurityContext.URL, trustedUrl);
-  }
-
-  private setProfileLogo(observable: Observable<Blob>, saveLogo?: boolean) {
-    observable.pipe(take(1)).subscribe((photo) => {
-      console.log(photo);
-      this.capturedPhoto = photo;
-      this.trustedCapturedPhoto = this.formatToSafeURL(photo);
-      //TODO CHANGE TO ACTION
-      if (saveLogo) {
-        this.fireService.saveProfileLogo(photo, this.loggedUser.id);
-      }
-    });
-  }
-
-  ionViewWillLeave() {
+  ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.complete();
   }

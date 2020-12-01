@@ -23,21 +23,13 @@ import { HeaderComponent } from 'src/shared/components/header/header.component';
 import { FooterComponent } from 'src/shared/components/footer/footer.component';
 import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard.service';
 import { MenuComponent } from 'src/shared/components/menu/menu.component';
-import { ToastComponent } from 'src/shared/components/toast/toast.component';
 import { RegisterComponent } from 'src/shared/components/register/register.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoadingInterceptor } from 'src/shared/interceptors/loading.interceptor';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    HeaderComponent,
-    FooterComponent,
-    MenuComponent,
-    ToastComponent,
-  ],
+  declarations: [AppComponent, LoginComponent, RegisterComponent, HeaderComponent, FooterComponent, MenuComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -65,6 +57,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     AuthGuardService,
     GuestGuardService,
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

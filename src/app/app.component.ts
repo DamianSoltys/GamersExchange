@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 import { CHECK_AUTH } from 'src/shared/store/actions/user.action';
 import { distinctUntilChanged, filter, map, skip } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MainService } from 'src/shared/services/main.service';
 
 @Component({
   selector: 'app-root',
@@ -25,18 +26,15 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private store: Store<IInitialState>,
+    private mainService: MainService,
     private router: Router
   ) {
     this.initializeApp();
   }
 
   initializeApp() {
-    // this.userState$.pipe(skip(1)).subscribe((isLoggedIn) => {
-    //   isLoggedIn ? this.router.navigate(['/home']) : this.router.navigate(['/login']);
-    // });
-
     this.platform.ready().then(() => {
-      this.store.dispatch(CHECK_AUTH());
+      this.mainService.dispatch(CHECK_AUTH());
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });

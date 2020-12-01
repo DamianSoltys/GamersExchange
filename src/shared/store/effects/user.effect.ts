@@ -14,6 +14,9 @@ import {
   CREATE_USER_SUCCESS,
   GET_USER,
   GET_USER_ERROR,
+  GET_USER_LOGO,
+  GET_USER_LOGO_ERROR,
+  GET_USER_LOGO_SUCCESS,
   GET_USER_SUCCESS,
   LOGIN_USER,
   LOGIN_USER_ERROR,
@@ -27,6 +30,9 @@ import {
   REGISTER_USER,
   REGISTER_USER_ERROR,
   REGISTER_USER_SUCCESS,
+  SET_USER_LOGO,
+  SET_USER_LOGO_ERROR,
+  SET_USER_LOGO_SUCCESS,
 } from '../actions/user.action';
 import firebase from 'firebase/app';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
@@ -36,6 +42,8 @@ import { ToastMessageEnum, ToastTypeEnum } from 'src/shared/interfaces/toast.int
 import { Store } from '@ngrx/store';
 import { IInitialState } from '../interfaces/store.interface';
 import { NavController } from '@ionic/angular';
+import { PhotoService } from 'src/shared/services/photo.service';
+import { MainService } from 'src/shared/services/main.service';
 
 @Injectable()
 export class UserEffects {
@@ -85,7 +93,7 @@ export class UserEffects {
       ofType(REGISTER_USER),
       switchMap(({ payload }) => combineLatest([this.fireService.registerUserByCridentials(payload), of(payload)])),
       switchMap(([res, payload]) => {
-        this.store.dispatch(CREATE_USER({ payload }));
+        this.mainService.dispatch(CREATE_USER({ payload }));
 
         return this.errorService.handleResponse(REGISTER_USER_SUCCESS());
       }),
@@ -154,14 +162,41 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(GET_USER),
       switchMap(({ payload }) => this.fireService.getUserByEmail(payload)),
-      switchMap((data: IUserFirebaseCollection) => {
-        console.log(data);
-        return this.errorService.handleResponse(GET_USER_SUCCESS({ payload: data }));
-      }),
-      catchError((error, caught) => {
-        return this.errorService.handleError(GET_USER_ERROR({ payload: error }), caught, true, {
+      switchMap((data: IUserFirebaseCollection) =>
+        this.errorService.handleResponse(GET_USER_SUCCESS({ payload: data }))
+      ),
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
+    )
+  );
+
+  setUserLogo$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SET_USER_LOGO),
+      switchMap(({ payload }) => this.fireService.getProfileLogo(payload)),
+      switchMap((data: Blob) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: data }))),
+      catchError((error, caught) => {
+        return this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.LOGO_DOWNLOAD_ERROR,
+        });
+      })
+    )
+  );
+
+  getUserLogo$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_USER_LOGO),
+      switchMap(({ payload }) => this.fireService.getProfileLogo(Number(payload))),
+      switchMap((data: Blob) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: data }))),
+      catchError((error, caught) => {
+        return this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.LOGO_MODIFY_ERROR,
         });
       })
     )
@@ -171,8 +206,7 @@ export class UserEffects {
     private actions$: Actions,
     private fireService: FirebaseService,
     private errorService: ErrorService,
-    private navigation: NavController,
-    private router: Router,
-    private store: Store<IInitialState>
+    private mainService: MainService,
+    private navigation: NavController
   ) {}
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SecurityContext } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { Store } from '@ngrx/store';
@@ -7,17 +7,20 @@ import { IInitialState } from '../store/interfaces/store.interface';
 import { from } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({ providedIn: 'root' })
-export class PhotoSevice {
+export class PhotoService {
   public Camera = Plugins.Camera;
 
-  constructor(
-    private store: Store<IInitialState>,
-    private storage: Storage,
-    private router: Router,
-    private http: HttpClient
-  ) {}
+  constructor(private sanitizer: DomSanitizer, private http: HttpClient) {}
+
+  public formatToSafeURL(file: Blob) {
+    const url = URL.createObjectURL(file);
+    const trustedUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+
+    return this.sanitizer.sanitize(SecurityContext.URL, trustedUrl);
+  }
 
   public takePhoto() {
     return this.getPhotoUrl().pipe(

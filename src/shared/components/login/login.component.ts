@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { filter, map } from 'rxjs/operators';
 import { ILoginUser, IRegisterUser } from 'src/shared/interfaces/user.interface';
 import { FirebaseService } from 'src/shared/services/firebase.service';
+import { MainService } from 'src/shared/services/main.service';
 import { CHECK_AUTH, LOGIN_USER, LOGOUT_USER } from 'src/shared/store/actions/user.action';
 import { IInitialState, IUserState } from 'src/shared/store/interfaces/store.interface';
 
@@ -19,11 +20,11 @@ export class LoginComponent implements OnInit {
     password: [null, Validators.required],
   });
 
-  constructor(private store: Store<IInitialState>, private fb: FormBuilder) {}
+  constructor(private mainService: MainService, private fb: FormBuilder) {}
 
   ngOnInit() {}
 
   public loginUser(user: ILoginUser) {
-    this.store.dispatch(LOGIN_USER({ payload: user }));
+    this.mainService.dispatch(LOGIN_USER({ payload: user }));
   }
 }

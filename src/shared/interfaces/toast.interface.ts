@@ -23,4 +23,6 @@ export enum ToastMessageEnum {
   MODIFY_USER_ERROR = 'Nie udało się zaktualizować danych',
   REGISTER_SUCCESS = 'Rejestracja się powiodła',
   REGISTER_ERROR = 'Rejestracja się nie powiodła',
+  LOGO_DOWNLOAD_ERROR = 'Nie udało się pobrać zdjęcia profilowego',
+  LOGO_MODIFY_ERROR = 'Nie udało się zaktualizować zdjęcia profilowego',
 }

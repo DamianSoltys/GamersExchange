@@ -4,7 +4,9 @@
       <ion-img class="img-element" *ngIf="trustedCapturedPhoto" [src]="trustedCapturedPhoto"></ion-img>
     </div>
     <div>
-      <ion-button expand="block" (click)="takePhoto()">Dodaj logo</ion-button>
+      <ion-button expand="block" (click)="takePhoto()">{{
+        trustedCapturedPhoto ? 'Zaktualizuj logo' : 'Dodaj logo'
+      }}</ion-button>
     </div>
   </div>
   <form [formGroup]="profileForm">

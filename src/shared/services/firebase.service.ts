@@ -37,6 +37,7 @@ export class FirebaseService {
     private fireStorage: AngularFireStorage
   ) {}
 
+  // LOGO METHODS SECTION
   public saveProfileLogo(file: Blob, id: number) {
     const fileRef = this.fireStorage.ref(`images/user/${id}/profile/logo`);
 
@@ -64,6 +65,31 @@ export class FirebaseService {
     return forkJoin(fileObs);
   }
 
+  // CATEGORY METHODS SECTION
+  public getAllCategories() {
+    return this.categoryCollection$;
+  }
+
+  // PRODUCT METHODS SECTION
+  public getAllUserProductsById(id: number) {
+    return this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', id))
+      .get()
+      .pipe(map((snapshot) => (snapshot.empty ? null : ((snapshot.docs as unknown) as IProductFirebaseCollection[]))));
+  }
+
+  public getProductById(id: number) {
+    return this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('id', '==', id))
+      .get()
+      .pipe(
+        map((snapshot) =>
+          snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IProductFirebaseCollection)
+        )
+      );
+  }
+
+  // USER METHODS SECTION
   public modifyUserData(userData: IUserFirebaseCollection, userId: number) {
     return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId.toString()).update(userData);
   }
@@ -72,7 +98,9 @@ export class FirebaseService {
     return this.firestore
       .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('id', '==', id))
       .get()
-      .pipe(map((snapshot) => (snapshot.empty ? null : snapshot.docs[0])));
+      .pipe(
+        map((snapshot) => (snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IUserFirebaseCollection)))
+      );
   }
 
   public getUserByEmail(email: string): Observable<IUserFirebaseCollection> {

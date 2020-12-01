@@ -1,7 +1,11 @@
 import { ActionReducerMap } from '@ngrx/store';
-import { IUserFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
+import {
+  IProductFirebaseCollection,
+  IUserFirebaseCollection,
+} from 'src/shared/firebase/interfaces/firestore.interface';
 import { IToastInterface } from 'src/shared/interfaces/toast.interface';
 import { UserEffects } from '../effects/user.effect';
+import { productReducer } from '../reducers/product.reducer';
 import { toastReducer } from '../reducers/toast.reducer';
 import { userReducer } from '../reducers/user.reducer';
 
@@ -9,6 +13,7 @@ export const storeEffects = [UserEffects];
 export interface IInitialState {
   userState: IUserState;
   toastState: IToastState;
+  productState: IProductState;
 }
 
 export interface IToastState {
@@ -22,7 +27,14 @@ export interface IUserState {
   isLoggedIn: boolean;
 }
 
+export interface IProductState {
+  products: IProductFirebaseCollection[];
+  lastProduct: IProductFirebaseCollection;
+  categories: string[];
+}
+
 export const storeConfig: ActionReducerMap<IInitialState> = {
   userState: userReducer,
   toastState: toastReducer,
+  productState: productReducer,
 };

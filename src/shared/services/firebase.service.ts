@@ -75,7 +75,19 @@ export class FirebaseService {
     return this.firestore
       .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', id))
       .get()
-      .pipe(map((snapshot) => (snapshot.empty ? null : ((snapshot.docs as unknown) as IProductFirebaseCollection[]))));
+      .pipe(
+        map((snapshot) => {
+          if (snapshot.empty) {
+            return null;
+          } else {
+            const mappedData: IProductFirebaseCollection[] = [];
+
+            snapshot.docs.forEach((product) => mappedData.push(product.data()));
+
+            return mappedData;
+          }
+        })
+      );
   }
 
   public getProductById(id: number) {

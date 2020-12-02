@@ -1,0 +1,5 @@
+<ion-content class="ion-padding product-list-component">
+  <ion-grid>
+    <ion-row *ngFor="let product of productList$ | async" (click)="goToDetails(product.id)">{{ product.name }}</ion-row>
+  </ion-grid>
+</ion-content>

@@ -177,7 +177,7 @@ export class UserEffects {
   setUserLogo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SET_USER_LOGO),
-      switchMap(({ payload }) => this.fireService.getProfileLogo(payload)),
+      switchMap(() => this.photoService.takePhoto()),
       switchMap((data: Blob) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: data }))),
       catchError((error, caught) => {
         return this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught, true, {
@@ -206,6 +206,7 @@ export class UserEffects {
     private actions$: Actions,
     private fireService: FirebaseService,
     private errorService: ErrorService,
+    private photoService: PhotoService,
     private mainService: MainService,
     private navigation: NavController
   ) {}

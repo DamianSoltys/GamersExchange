@@ -4,12 +4,13 @@ import {
   IUserFirebaseCollection,
 } from 'src/shared/firebase/interfaces/firestore.interface';
 import { IToastInterface } from 'src/shared/interfaces/toast.interface';
+import { ProductEffects } from '../effects/product.effect';
 import { UserEffects } from '../effects/user.effect';
 import { productReducer } from '../reducers/product.reducer';
 import { toastReducer } from '../reducers/toast.reducer';
 import { userReducer } from '../reducers/user.reducer';
 
-export const storeEffects = [UserEffects];
+export const storeEffects = [UserEffects, ProductEffects];
 export interface IInitialState {
   userState: IUserState;
   toastState: IToastState;

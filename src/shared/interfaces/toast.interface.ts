@@ -25,4 +25,11 @@ export enum ToastMessageEnum {
   REGISTER_ERROR = 'Rejestracja się nie powiodła',
   LOGO_DOWNLOAD_ERROR = 'Nie udało się pobrać zdjęcia profilowego',
   LOGO_MODIFY_ERROR = 'Nie udało się zaktualizować zdjęcia profilowego',
+  DELETE_PRODUCT_ERROR = 'Nie udało się usunąć produktu',
+  DELETE_PRODUCT_SUCCESS = 'Produkt usunięty pomyślnie',
+  ADD_PRODUCT_ERROR = 'Nie udało się dodać produktu',
+  ADD_PRODUCT_SUCCESS = 'Produkt dodany pomyślnie',
+  FILE_ADD_ERROR = 'Nie udało się dodać jednego ze zdjęć',
+  PRODUCT_FOLDER_REMOVE_ERROR = 'Nie udało się usunąć zdjęć produktu',
+  DIFFERENT_PASSWORD_ERROR = 'Hasła się różnią',
 }

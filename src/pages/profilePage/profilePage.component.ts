@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, SecurityContext } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, takeUntil, filter, take } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map, takeUntil, filter } from 'rxjs/operators';
 import {
   InterestsEnum,
   IUserFirebaseCollection,
@@ -12,15 +12,13 @@ import {
   GET_USER,
   GET_USER_LOGO,
   GET_USER_LOGO_SUCCESS,
-  GET_USER_SUCCESS,
   MODIFY_USER_DATA,
   SET_USER_LOGO,
   SET_USER_LOGO_SUCCESS,
 } from 'src/shared/store/actions/user.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 import { PhotoService } from 'src/shared/services/photo.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { FirebaseService } from 'src/shared/services/firebase.service';
+import { SafeUrl } from '@angular/platform-browser';
 import { Actions, ofType } from '@ngrx/effects';
 import { MainService } from 'src/shared/services/main.service';
 
@@ -75,6 +73,11 @@ export class ProfilePageComponent implements OnDestroy {
       });
 
     this.loggedUser$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
+      if (user.logo) {
+        this.capturedPhoto = user.logo;
+        this.trustedCapturedPhoto = photoService.formatToSafeURL(user.logo);
+      }
+
       this.loggedUser = user;
     });
 
@@ -92,8 +95,6 @@ export class ProfilePageComponent implements OnDestroy {
     if (!this.capturedPhoto) {
       this.mainService.dispatch(GET_USER_LOGO({ payload: this.loggedUser.id }));
     }
-
-    this.mainService.dispatch(GET_USER({ payload: this.loggedUser.email }));
   }
 
   public submitModifyData(user: IUserFirebaseCollection) {

@@ -5,12 +5,15 @@ import { ILoginUser, IRegisterUser } from 'src/shared/interfaces/user.interface'
 export const CHECK_AUTH = createAction('[USER] Check Auth');
 export const CHECK_AUTH_SUCCESS = createAction(
   '[USER] Check Auth Success',
-  props<{ isLogged: boolean; email: string; id: number }>()
+  props<{ isLogged: boolean; user: IUserFirebaseCollection }>()
 );
 export const CHECK_AUTH_ERROR = createAction('[USER] Check Auth Error', props<{ payload: Error }>());
 
 export const LOGIN_USER = createAction('[USER] Login User', props<{ payload: ILoginUser }>());
-export const LOGIN_USER_SUCCESS = createAction('[USER] Login User Success', props<{ email: string; id: number }>());
+export const LOGIN_USER_SUCCESS = createAction(
+  '[USER] Login User Success',
+  props<{ payload: IUserFirebaseCollection }>()
+);
 export const LOGIN_USER_ERROR = createAction('[USER] Login User Error', props<{ payload: Error }>());
 
 export const LOGOUT_USER = createAction('[USER] Logout User');

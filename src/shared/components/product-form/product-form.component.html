@@ -1,11 +1,18 @@
 <ion-content class="ion-padding product-component">
-  <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }">
-    <ion-slide *ngFor="let trustedCapturedPhoto of trustedCapturedPhotos">
-      <ion-col>
-        <ion-img class="img-element" *ngIf="trustedCapturedPhoto" [src]="trustedCapturedPhoto"></ion-img>
-      </ion-col>
-    </ion-slide>
-  </ion-slides>
+  <div>
+    <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }">
+      <ion-slide *ngFor="let trustedCapturedPhoto of trustedCapturedPhotos">
+        <ion-col>
+          <ion-img class="img-element" *ngIf="trustedCapturedPhoto" [src]="trustedCapturedPhoto"></ion-img>
+        </ion-col>
+      </ion-slide>
+    </ion-slides>
+    <div>
+      <ion-button expand="block" color="success" (click)="takePhoto()"
+        ><ion-icon name="image" class="ion-margin-end"></ion-icon>{{ 'Dodaj zdjęcie' }}</ion-button
+      >
+    </div>
+  </div>
   <form [formGroup]="productForm">
     <ion-grid>
       <ion-row>
@@ -52,7 +59,11 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Kategorie</ion-label>
-            <ion-input formControlName="category"></ion-input>
+            <ion-select interface="popover" formControlName="category" multiple>
+              <ion-select-option *ngFor="let category of categories$ | async" [value]="category">{{
+                category
+              }}</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -60,10 +71,23 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Platformy</ion-label>
-            <ion-input formControlName="platform"></ion-input>
+            <ion-select interface="popover" formControlName="platform" multiple>
+              <ion-select-option *ngFor="let platform of platformOptions" [value]="platform">{{
+                platform
+              }}</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
+
+    <ion-button
+      class="ion-margin-vertical"
+      [disabled]="productForm.invalid"
+      expand="block"
+      (click)="submitModifyData(productForm.value)"
+    >
+      <ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Dodaj produkt
+    </ion-button>
   </form>
 </ion-content>

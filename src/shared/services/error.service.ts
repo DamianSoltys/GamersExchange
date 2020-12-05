@@ -11,6 +11,7 @@ import { IInitialState } from '../store/interfaces/store.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ErrorService {
+  private loading: HTMLIonLoadingElement[] = [];
   constructor(
     private store: Store<IInitialState>,
     private toastController: ToastController,
@@ -39,11 +40,19 @@ export class ErrorService {
   }
 
   public async showLoading() {
-    (await this.loadingController.create()).present();
+    this.loading.push(await this.loadingController.create());
+
+    this.loading[this.loading.length - 1]?.present();
   }
 
   public async dismissLoading() {
-    await this.loadingController.dismiss();
+    if (this.loading.length > 0) {
+      this.loading.forEach((loadingComponent) => {
+        loadingComponent.dismiss();
+      });
+    }
+
+    this.loading = [];
   }
 
   public handleResponse(action: TypedAction<any>, showToast?: boolean, toastConfig?: IToastInterface) {

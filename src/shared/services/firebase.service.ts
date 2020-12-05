@@ -3,17 +3,19 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { Store } from '@ngrx/store';
-import { from, Observable, forkJoin } from 'rxjs';
+import { from, Observable, forkJoin, of } from 'rxjs';
 import {
   IExchangeFirebaseCollection,
   IProductFirebaseCollection,
   IUserFirebaseCollection,
 } from '../firebase/interfaces/firestore.interface';
 import { IInitialState } from '../store/interfaces/store.interface';
-import { map, mergeAll, take } from 'rxjs/operators';
+import { catchError, map, mergeAll, switchMap, take } from 'rxjs/operators';
 import { ILoginUser, IRegisterUser } from '../interfaces/user.interface';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { HttpClient } from '@angular/common/http';
+import { SHOW_TOAST } from '../store/actions/toast.action';
+import { ToastMessageEnum, ToastTypeEnum } from '../interfaces/toast.interface';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
@@ -53,32 +55,88 @@ export class FirebaseService {
     );
   }
 
+  public async getProductImages(productId: number, userId: number) {
+    const fileRef = this.fireStorage.ref(`images/user/${userId}/product/${productId}`);
+
+    return fileRef.listAll().pipe(
+      switchMap((data) => {
+        const blobObservables: Observable<Blob>[] = [];
+
+        data.items.forEach((item) => {
+          blobObservables.push(
+            from(item.getDownloadURL()).pipe(
+              map((url) => this.http.get(url, { responseType: 'blob' })),
+              mergeAll()
+            )
+          );
+        });
+
+        return forkJoin(!!blobObservables.length ? blobObservables : [(of(null) as unknown) as Blob[]]);
+      })
+    );
+  }
+
   public saveProductImages(files: Blob[], userId: number, productId: number) {
-    let fileObs = [];
+    const fileObs: Observable<any>[] = [];
 
     files.forEach((file, index) => {
       fileObs.push(
-        this.fireStorage.upload(`images/user/${userId}/product/${productId}/photo_${index}`, file).snapshotChanges()
+        this.fireStorage
+          .upload(`images/user/${userId}/product/${productId}/photo_${index}`, file)
+          .snapshotChanges()
+          .pipe(
+            catchError((err, caught) => {
+              this.store.dispatch(
+                SHOW_TOAST({ payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.FILE_ADD_ERROR } })
+              );
+
+              return caught;
+            })
+          )
       );
     });
 
     return forkJoin(fileObs);
   }
 
+  public removeProductImages(productId: number, userId: number) {
+    const fileRef = this.fireStorage.ref(`images/user/${userId}/product/${productId}`);
+
+    return fileRef.listAll().pipe(
+      switchMap((list) => {
+        const deleteObs = [];
+
+        list.items.forEach((item) => {
+          deleteObs.push(
+            item.delete().catch(() => {
+              this.store.dispatch(
+                SHOW_TOAST({
+                  payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.PRODUCT_FOLDER_REMOVE_ERROR },
+                })
+              );
+            })
+          );
+        });
+
+        return forkJoin(deleteObs);
+      })
+    );
+  }
+
   // CATEGORY METHODS SECTION
   public getAllCategories() {
-    return this.categoryCollection$;
+    return this.categoryCollection$.pipe(map((categories) => Object.values(categories[0])));
   }
 
   // PRODUCT METHODS SECTION
   public getAllUserProductsById(id: number) {
     return this.firestore
-      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', id))
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', Number(id)))
       .get()
       .pipe(
         map((snapshot) => {
           if (snapshot.empty) {
-            return null;
+            return [];
           } else {
             const mappedData: IProductFirebaseCollection[] = [];
 
@@ -92,22 +150,34 @@ export class FirebaseService {
 
   public getProductById(id: number) {
     return this.firestore
-      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('id', '==', id))
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('id', '==', Number(id)))
       .get()
       .pipe(
-        map((snapshot) =>
-          snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IProductFirebaseCollection)
-        )
+        map((snapshot) => {
+          return snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IProductFirebaseCollection);
+        })
       );
   }
 
-  public addProduct(product: IProductFirebaseCollection) {
+  public addProduct(product: IProductFirebaseCollection, files: Blob[]) {
     return this.productCollection$.pipe(
       take(1),
       map((data) => {
+        const productData = { ...product };
         const id = data?.length + 1;
+        productData.id = id;
 
-        return from(this.firestore.collection<IProductFirebaseCollection>('Products').doc(id.toString()).set(product));
+        return from(
+          this.firestore
+            .collection<IProductFirebaseCollection>('Products')
+            .doc(productData.id.toString())
+            .set(productData)
+            .then(() => {
+              if (files?.length > 0) {
+                this.saveProductImages(files, productData.userId, productData.id);
+              }
+            })
+        );
       }),
       mergeAll()
     );
@@ -120,8 +190,8 @@ export class FirebaseService {
       .update(product);
   }
 
-  public deleteProductById(id: number) {
-    return this.firestore.collection<IProductFirebaseCollection>('Products').doc(id.toString()).delete();
+  public deleteProductById(productId: number, userId: number) {
+    return from(this.firestore.collection<IProductFirebaseCollection>('Products').doc(productId.toString()).delete());
   }
 
   // USER METHODS SECTION
@@ -131,7 +201,7 @@ export class FirebaseService {
 
   public getUserById(id: number) {
     return this.firestore
-      .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('id', '==', id))
+      .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('id', '==', Number(id)))
       .get()
       .pipe(
         map((snapshot) => (snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IUserFirebaseCollection)))

@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map } from 'rxjs/operators';
-import { ToastTypeEnum } from 'src/shared/interfaces/toast.interface';
+import { ToastMessageEnum, ToastTypeEnum } from 'src/shared/interfaces/toast.interface';
 import { IRegisterUser } from 'src/shared/interfaces/user.interface';
 import { FirebaseService } from 'src/shared/services/firebase.service';
 import { MainService } from 'src/shared/services/main.service';
@@ -31,7 +31,9 @@ export class RegisterComponent implements OnInit {
     if (user.password === user.confirmPassword) {
       this.mainService.dispatch(REGISTER_USER({ payload: user }));
     } else {
-      this.mainService.dispatch(SHOW_TOAST({ payload: { type: ToastTypeEnum.ERROR, message: 'Hasła się różnią' } }));
+      this.mainService.dispatch(
+        SHOW_TOAST({ payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.DIFFERENT_PASSWORD_ERROR } })
+      );
     }
   }
 }

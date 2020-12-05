@@ -4,7 +4,7 @@ export interface IUserFirebaseCollection {
   firstName: string;
   id: number;
   interests: string[];
-  logo: string;
+  logo: Blob;
   platform: PlatformEnum[];
   surname: string;
   userName: string;
@@ -19,7 +19,7 @@ export interface IProductFirebaseCollection {
   platform: PlatformEnum[];
   position: [];
   possibleExchangeItem: string;
-  productImages: string[];
+  productImages: Blob[];
   state: StateEnum;
   userId: number;
 }

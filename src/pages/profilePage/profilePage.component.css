@@ -4,8 +4,3 @@
   flex-direction: column;
   justify-content: center;
 }
-
-.img-element {
-  border: 1px solid black;
-  border-radius: 10px;
-}

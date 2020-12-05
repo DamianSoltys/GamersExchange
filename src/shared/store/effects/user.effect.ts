@@ -52,10 +52,10 @@ export class UserEffects {
       ofType(LOGIN_USER),
       switchMap(({ payload }) => this.fireService.loginUserByCridentials(payload)),
       switchMap(({ user: { email } }) => this.fireService.getUserByEmail(email)),
-      switchMap(({ email, id }) => {
+      switchMap((user) => {
         this.navigation.navigateRoot(['/home']);
 
-        return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ email, id }), true, {
+        return this.errorService.handleResponse(LOGIN_USER_SUCCESS({ payload: user }), true, {
           type: ToastTypeEnum.SUCCESS,
           message: ToastMessageEnum.LOGIN_SUCCESS,
         });
@@ -111,8 +111,6 @@ export class UserEffects {
       ofType(LOGOUT_USER),
       switchMap(() => this.fireService.logOut()),
       switchMap(() => {
-        this.navigation.navigateRoot(['/login']);
-
         return this.errorService.handleResponse(LOGOUT_USER_SUCCESS(), true, {
           type: ToastTypeEnum.SUCCESS,
           message: ToastMessageEnum.LOGOUT_SUCCESS,
@@ -131,10 +129,8 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(CHECK_AUTH),
       switchMap(() => this.fireService.isLoggedIn$),
-      switchMap(({ email }) => (email ? this.fireService.getUserByEmail(email) : of({ email: null, id: null }))),
-      switchMap(({ email, id }) =>
-        this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!email, email, id }))
-      ),
+      switchMap(({ email }) => (email ? this.fireService.getUserByEmail(email) : of(null))),
+      switchMap((user) => this.errorService.handleResponse(CHECK_AUTH_SUCCESS({ isLogged: !!user, user }))),
       catchError((error, caught) => this.errorService.handleError(CHECK_AUTH_ERROR({ payload: error }), caught))
     )
   );
@@ -177,8 +173,9 @@ export class UserEffects {
   setUserLogo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(SET_USER_LOGO),
-      switchMap(() => this.photoService.takePhoto()),
-      switchMap((data: Blob) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: data }))),
+      switchMap(({ payload }) => combineLatest([this.photoService.takePhoto(), of(payload)])),
+      switchMap(([file, id]) => combineLatest([this.fireService.saveProfileLogo(file, id), of(file)])),
+      switchMap(([res, file]) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: file }))),
       catchError((error, caught) => {
         return this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
@@ -193,12 +190,7 @@ export class UserEffects {
       ofType(GET_USER_LOGO),
       switchMap(({ payload }) => this.fireService.getProfileLogo(Number(payload))),
       switchMap((data: Blob) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: data }))),
-      catchError((error, caught) => {
-        return this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught, true, {
-          type: ToastTypeEnum.ERROR,
-          message: ToastMessageEnum.LOGO_MODIFY_ERROR,
-        });
-      })
+      catchError((error, caught) => this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught))
     )
   );
 
@@ -207,6 +199,7 @@ export class UserEffects {
     private fireService: FirebaseService,
     private errorService: ErrorService,
     private photoService: PhotoService,
+    private router: Router,
     private mainService: MainService,
     private navigation: NavController
   ) {}

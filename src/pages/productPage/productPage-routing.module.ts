@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ProductFormComponent } from 'src/shared/components/product-form/product-form.component';
 import { ProductListComponent } from 'src/shared/components/product-list/product-list.component';
 import { ProductComponent } from 'src/shared/components/product/product.component';
 import { ProductPageComponent } from './productPage.component';
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'search',
     component: ProductListComponent,
+  },
+  {
+    path: 'add',
+    component: ProductFormComponent,
   },
   {
     path: 'details/:id',

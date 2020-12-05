@@ -32,6 +32,7 @@ export interface IProductState {
   products: IProductFirebaseCollection[];
   lastProduct: IProductFirebaseCollection;
   categories: string[];
+  formImages: Blob[];
 }
 
 export const storeConfig: ActionReducerMap<IInitialState> = {

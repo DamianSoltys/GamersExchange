@@ -4,9 +4,10 @@
       <ion-img class="img-element" *ngIf="trustedCapturedPhoto" [src]="trustedCapturedPhoto"></ion-img>
     </div>
     <div>
-      <ion-button expand="block" (click)="takePhoto()">{{
-        trustedCapturedPhoto ? 'Zaktualizuj logo' : 'Dodaj logo'
-      }}</ion-button>
+      <ion-button expand="block" color="success" (click)="takePhoto()"
+        ><ion-icon name="image" class="ion-margin-end"></ion-icon
+        >{{ trustedCapturedPhoto ? 'Zaktualizuj logo' : 'Dodaj logo' }}</ion-button
+      >
     </div>
   </div>
   <form [formGroup]="profileForm">
@@ -23,7 +24,7 @@
         <ion-col>
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input disabled="true" value="{{ (loggedUser$ | async).email }}"></ion-input>
+            <ion-input disabled="true" value="{{ (loggedUser$ | async)?.email }}"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -123,12 +124,13 @@
       class="ion-margin-vertical"
       *ngIf="toggleEdit.getValue()"
       expand="block"
+      color="success"
       (click)="submitModifyData(profileForm.value)"
     >
       <ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Zaktualizuj dane
     </ion-button>
   </form>
   <ion-button class="ion-margin-vertical" expand="block" (click)="toggleEdit.next(!toggleEdit.getValue())">
-    <ion-icon name="toggle-sharp" class="ion-margin-end"></ion-icon>Edytuj
+    <ion-icon name="toggle-sharp" class="ion-margin-end"></ion-icon>Zmień tryb edycji
   </ion-button>
 </ion-content>

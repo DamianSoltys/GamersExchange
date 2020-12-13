@@ -1,0 +1,10 @@
+<ion-content>
+  <ion-button expand="block" class="close-button" (click)="closeModal()">Powróć</ion-button>
+  <div
+    *ngIf="loaded"
+    style="height: 100%"
+    leaflet
+    [leafletOptions]="options"
+    (leafletMapReady)="onMapReady($event)"
+  ></div>
+</ion-content>

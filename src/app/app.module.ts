@@ -28,6 +28,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoadingInterceptor } from 'src/shared/interceptors/loading.interceptor';
 
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegisterComponent, HeaderComponent, FooterComponent, MenuComponent],
   entryComponents: [],
@@ -52,6 +54,7 @@ import { LoadingInterceptor } from 'src/shared/interceptors/loading.interceptor'
     }),
   ],
   providers: [
+    Geolocation,
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

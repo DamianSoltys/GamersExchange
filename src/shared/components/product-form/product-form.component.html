@@ -18,7 +18,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Nazwa</ion-label>
+            <ion-label position="floating">Nazwa *</ion-label>
             <ion-input formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
@@ -26,8 +26,16 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Stan</ion-label>
+            <ion-label position="floating">Stan *</ion-label>
             <ion-input formControlName="state"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Lokalizacja produktu</ion-label>
+            <ion-input formControlName="position"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -42,7 +50,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Opis</ion-label>
+            <ion-label position="floating">Opis *</ion-label>
             <ion-input formControlName="description"></ion-input>
           </ion-item>
         </ion-col>
@@ -58,7 +66,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Kategorie</ion-label>
+            <ion-label position="floating">Kategorie *</ion-label>
             <ion-select interface="popover" formControlName="category" multiple>
               <ion-select-option *ngFor="let category of categories$ | async" [value]="category">{{
                 category
@@ -70,7 +78,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Platformy</ion-label>
+            <ion-label position="floating">Platformy *</ion-label>
             <ion-select interface="popover" formControlName="platform" multiple>
               <ion-select-option *ngFor="let platform of platformOptions" [value]="platform">{{
                 platform

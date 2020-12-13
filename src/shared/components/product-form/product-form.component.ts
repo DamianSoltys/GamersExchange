@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { from, Subject } from 'rxjs';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { IProductFirebaseCollection, PlatformEnum } from 'src/shared/firebase/interfaces/firestore.interface';
 import { MainService } from 'src/shared/services/main.service';
 import { PhotoService } from 'src/shared/services/photo.service';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {
   ADD_PRODUCT,
   GET_ALL_CATEGORIES,
@@ -15,6 +16,7 @@ import {
   SET_PRODUCT_PHOTO,
 } from 'src/shared/store/actions/product.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
+import { GeolocationService } from 'src/shared/services/geolocation.service';
 
 @Component({
   selector: 'app-product-form',
@@ -36,12 +38,12 @@ export class ProductFormComponent {
   public trustedCapturedPhotos: SafeUrl[] = [];
   public platformOptions = Object.values(PlatformEnum);
   public productForm = this.fb.group({
-    name: [null],
-    state: [null],
+    name: [null, Validators.required],
+    state: [null, Validators.required],
     approximatePrice: [null],
-    platform: [null],
-    category: [null],
-    description: [null],
+    platform: [null, Validators.required],
+    category: [null, Validators.required],
+    description: [null, Validators.required],
     position: [null],
     possibleExchangeItem: [null],
   });
@@ -57,8 +59,13 @@ export class ProductFormComponent {
     private fb: FormBuilder,
     private mainService: MainService,
     private photoService: PhotoService,
+    private geolocationService: GeolocationService,
     private router: Router
   ) {
+    this.geolocationService.currentPosition$.pipe(takeUntil(this.destroy$)).subscribe(({ longitude, latitude }) => {
+      this.productForm.controls.position.setValue({ longitude, latitude });
+    });
+
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;
     });

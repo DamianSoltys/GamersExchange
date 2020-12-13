@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController, IonSearchbar } from '@ionic/angular';
+import { AlertController, IonSearchbar, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 import { MainService } from 'src/shared/services/main.service';
-import { DELETE_USER_PRODUCT, GET_ALL_PRODUCTS, GET_ALL_USER_PRODUCTS } from 'src/shared/store/actions/product.action';
+import { GET_ALL_PRODUCTS } from 'src/shared/store/actions/product.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-product-search-list',
@@ -16,9 +17,9 @@ import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 })
 export class ProductSearchListComponent {
   @ViewChild('searchQuery', { static: true }) searchQuery: IonSearchbar;
+
   public productList$ = this.store.select('productState').pipe(map((productState) => productState.searchProducts));
   public userId: number;
-  // public searchQuery = this.fb.control(['dupa', Validators.minLength(3)]);
 
   private userId$ = this.store.select('userState').pipe(
     filter((userState) => userState?.loggedUser?.id !== null),
@@ -29,6 +30,7 @@ export class ProductSearchListComponent {
   constructor(
     private store: Store<IInitialState>,
     private router: Router,
+    private modalController: ModalController,
     private alertController: AlertController,
     private mainService: MainService,
     private fb: FormBuilder
@@ -40,6 +42,12 @@ export class ProductSearchListComponent {
 
   public goToDetails(id: number) {
     this.router.navigate(['/product/details', id]);
+  }
+
+  public async openMapModal() {
+    const modal = await this.modalController.create({ component: MapComponent, componentProps: { data: 'test' } });
+
+    return await modal.present();
   }
 
   ionViewDidEnter() {

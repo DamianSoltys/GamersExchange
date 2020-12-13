@@ -82,7 +82,7 @@ export class ProductFormComponent {
     productData.userId = this.userId;
 
     this.mainService.dispatch(ADD_PRODUCT({ product: productData, files: this.capturedPhotos }));
-    this.router.navigate([`/product/search`]);
+    this.router.navigate([`/product/products`]);
   }
 
   ionViewDidEnter() {

@@ -8,11 +8,11 @@ import { ProductPageComponent } from './productPage.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'search',
+    redirectTo: 'products',
     pathMatch: 'full',
   },
   {
-    path: 'search',
+    path: 'products',
     component: ProductListComponent,
   },
   {

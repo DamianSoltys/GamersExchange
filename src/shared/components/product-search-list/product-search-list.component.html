@@ -1,0 +1,28 @@
+<ion-content class="ion-padding product-list-component">
+  <ion-grid>
+    <ion-row>
+      <ion-searchbar #searchQuery></ion-searchbar>
+    </ion-row>
+    <ion-row class="ion-margin-bottom" *ngFor="let product of productList$ | async; let productNumber = index">
+      <div class="product-container">
+        <ion-item>
+          <ion-label>Numer:</ion-label>
+          <span>{{ productNumber + 1 }}</span>
+        </ion-item>
+        <ion-item>
+          <ion-label>Nazwa:</ion-label>
+          <span>{{ product.name }}</span>
+        </ion-item>
+        <ion-item>
+          <ion-label>Stan:</ion-label>
+          <span>{{ product.state }}</span>
+        </ion-item>
+        <ion-item>
+          <ion-button class="action-button" (click)="goToDetails(product.id)"
+            ><ion-icon name="arrow-redo-circle"></ion-icon
+          ></ion-button>
+        </ion-item>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

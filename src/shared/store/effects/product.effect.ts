@@ -16,6 +16,9 @@ import {
   GET_ALL_CATEGORIES,
   GET_ALL_CATEGORIES_ERROR,
   GET_ALL_CATEGORIES_SUCCESS,
+  GET_ALL_PRODUCTS,
+  GET_ALL_PRODUCTS_ERROR,
+  GET_ALL_PRODUCTS_SUCCESS,
   GET_ALL_USER_PRODUCTS,
   GET_ALL_USER_PRODUCTS_ERROR,
   GET_ALL_USER_PRODUCTS_SUCCESS,
@@ -56,6 +59,20 @@ export class ProductEffects {
       }),
       catchError((error, caught) =>
         this.errorService.handleError(GET_PRODUCT_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
+    )
+  );
+
+  getSearchProduct$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_ALL_PRODUCTS),
+      switchMap(({ payload }) => this.fireService.getSearchedProducts(payload)),
+      switchMap((products) => this.errorService.handleResponse(GET_ALL_PRODUCTS_SUCCESS({ payload: products }))),
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_ALL_PRODUCTS_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.GET_DATA_ERROR,
         })

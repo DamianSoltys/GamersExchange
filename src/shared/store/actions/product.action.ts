@@ -11,6 +11,13 @@ export const GET_ALL_USER_PRODUCTS_ERROR = createAction(
   props<{ payload: Error }>()
 );
 
+export const GET_ALL_PRODUCTS = createAction('[PRODUCT] Get All Products', props<{ payload: string }>());
+export const GET_ALL_PRODUCTS_SUCCESS = createAction(
+  '[PRODUCT] Get All Products Success',
+  props<{ payload: IProductFirebaseCollection[] }>()
+);
+export const GET_ALL_PRODUCTS_ERROR = createAction('[PRODUCT] Get All Products Error', props<{ payload: Error }>());
+
 export const GET_PRODUCT = createAction('[PRODUCT] Get Product', props<{ payload: number }>());
 export const GET_PRODUCT_SUCCESS = createAction(
   '[PRODUCT] Get Product Success',

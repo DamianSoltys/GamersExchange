@@ -3,14 +3,14 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { Store } from '@ngrx/store';
-import { from, Observable, forkJoin, of } from 'rxjs';
+import { from, Observable, forkJoin, of, combineLatest } from 'rxjs';
 import {
   IExchangeFirebaseCollection,
   IProductFirebaseCollection,
   IUserFirebaseCollection,
 } from '../firebase/interfaces/firestore.interface';
 import { IInitialState } from '../store/interfaces/store.interface';
-import { catchError, map, mergeAll, switchMap, take } from 'rxjs/operators';
+import { catchError, combineAll, map, mergeAll, switchMap, take } from 'rxjs/operators';
 import { ILoginUser, IRegisterUser } from '../interfaces/user.interface';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { HttpClient } from '@angular/common/http';
@@ -129,6 +129,42 @@ export class FirebaseService {
   }
 
   // PRODUCT METHODS SECTION
+  public getSearchedProducts(query: string): Observable<IProductFirebaseCollection[]> {
+    const categoryQuery = this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('category', 'array-contains', query))
+      .get();
+    const platformQuery = this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('platform', 'array-contains', query))
+      .get();
+    const nameQuery = this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('name', '==', query))
+      .get();
+    const stateQuery = this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('state', '==', query))
+      .get();
+
+    return !!query?.length
+      ? combineLatest([categoryQuery, stateQuery, platformQuery, nameQuery]).pipe(
+          map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
+            const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
+            const filteredData = [];
+
+            rawData.forEach((data) => {
+              if (!!data.docs?.length) {
+                data.docs.forEach((doc) => {
+                  filteredData.push(doc.data());
+                });
+              }
+            });
+
+            return filteredData.filter(
+              (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+            );
+          })
+        )
+      : this.productCollection$;
+  }
+
   public getAllUserProductsById(id: number) {
     return this.firestore
       .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', Number(id)))

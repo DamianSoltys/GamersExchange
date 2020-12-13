@@ -4,6 +4,7 @@ import {
   ADD_PRODUCT_SUCCESS,
   DELETE_USER_PRODUCT_SUCCESS,
   GET_ALL_CATEGORIES_SUCCESS,
+  GET_ALL_PRODUCTS_SUCCESS,
   GET_ALL_USER_PRODUCTS_SUCCESS,
   GET_PRODUCT_PHOTOS_SUCCESS,
   GET_PRODUCT_SUCCESS,
@@ -17,6 +18,7 @@ export const initialState: IProductState = {
   products: [],
   categories: [],
   formImages: [],
+  searchProducts: [],
 };
 
 export const productReducer = createReducer(
@@ -27,6 +29,7 @@ export const productReducer = createReducer(
     lastProduct: { ...state.lastProduct, productImages: action.payload },
   })),
   on(GET_ALL_USER_PRODUCTS_SUCCESS, (state, action) => ({ ...state, products: action.payload })),
+  on(GET_ALL_PRODUCTS_SUCCESS, (state, action) => ({ ...state, searchProducts: action.payload })),
   on(GET_ALL_CATEGORIES_SUCCESS, (state, action) => ({ ...state, categories: action.payload })),
   on(SET_PRODUCT_PHOTO_SUCCESS, (state, action) => ({
     ...state,

@@ -30,6 +30,7 @@ export interface IUserState {
 
 export interface IProductState {
   products: IProductFirebaseCollection[];
+  searchProducts: IProductFirebaseCollection[];
   lastProduct: IProductFirebaseCollection;
   categories: string[];
   formImages: Blob[];

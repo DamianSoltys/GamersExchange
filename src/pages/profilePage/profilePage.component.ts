@@ -83,7 +83,10 @@ export class ProfilePageComponent implements OnDestroy {
 
     this.userData$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       this.userData = user;
-      this.profileForm.patchValue(user);
+
+      for (const key in this.userData) {
+        this.userData[key] !== null ? this.profileForm.patchValue({ [key]: this.userData[key] }) : null;
+      }
     });
 
     this.toggleEdit.pipe(takeUntil(this.destroy$)).subscribe((isEditable) => {

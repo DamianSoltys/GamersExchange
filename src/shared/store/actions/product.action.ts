@@ -18,6 +18,29 @@ export const GET_ALL_PRODUCTS_SUCCESS = createAction(
 );
 export const GET_ALL_PRODUCTS_ERROR = createAction('[PRODUCT] Get All Products Error', props<{ payload: Error }>());
 
+export const GET_ADDRESS_BY_GEOPOINT = createAction(
+  '[PRODUCT] Get Address By Geopoint',
+  props<{ payload: { latitude: number; longitude: number } }>()
+);
+export const GET_ADDRESS_BY_GEOPOINT_SUCCESS = createAction(
+  '[PRODUCT] Get Address By Geopoint Success',
+  props<{ payload: string }>()
+);
+export const GET_ADDRESS_BY_GEOPOINT_ERROR = createAction(
+  '[PRODUCT] Get Address By Geopoint Error',
+  props<{ payload: Error }>()
+);
+
+export const GET_GEOPOINT_BY_ADDRESS = createAction('[PRODUCT] Get Geopoint By Address', props<{ payload: string }>());
+export const GET_GEOPOINT_BY_ADDRESS_SUCCESS = createAction(
+  '[PRODUCT] Get Geopoint By Address Success',
+  props<{ payload: { latitude: number; longitude: number } }>()
+);
+export const GET_GEOPOINT_BY_ADDRESS_ERROR = createAction(
+  '[PRODUCT] Get Geopoint By Address Error',
+  props<{ payload: Error }>()
+);
+
 export const GET_PRODUCT = createAction('[PRODUCT] Get Product', props<{ payload: number }>());
 export const GET_PRODUCT_SUCCESS = createAction(
   '[PRODUCT] Get Product Success',

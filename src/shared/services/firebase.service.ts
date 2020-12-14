@@ -104,6 +104,7 @@ export class FirebaseService {
 
     return fileRef.listAll().pipe(
       switchMap((list) => {
+        console.log(list);
         const deleteObs = [];
 
         list.items.forEach((item) => {
@@ -196,35 +197,29 @@ export class FirebaseService {
   }
 
   public addProduct(product: IProductFirebaseCollection, files: Blob[]) {
-    return this.productCollection$.pipe(
-      take(1),
-      map((data) => {
-        const productData = { ...product };
-        const id = data?.length + 1;
-        productData.id = id;
+    const id = Number(`${new Date().getTime()}${Math.floor(1000 + Math.random() * 9000)}`);
+    const productData = { ...product };
 
-        return from(
-          this.firestore
-            .collection<IProductFirebaseCollection>('Products')
-            .doc(productData.id.toString())
-            .set(productData)
-            .then(() => {
-              if (files?.length > 0) {
-                this.saveProductImages(files, productData.userId, productData.id);
-              }
-            })
-        );
-      }),
-      mergeAll()
+    productData.id = id;
+    return from(
+      this.firestore
+        .collection<IProductFirebaseCollection>('Products')
+        .doc(productData.id.toString())
+        .set(productData)
+        .then(() => {
+          if (files?.length > 0) {
+            this.saveProductImages(files, productData.userId, productData.id);
+          }
+        })
     );
   }
 
-  public editProduct(product: IProductFirebaseCollection) {
-    return this.firestore
-      .collection<IProductFirebaseCollection>('Products')
-      .doc(product.userId.toString())
-      .update(product);
-  }
+  // public editProduct(product: IProductFirebaseCollection) {
+  //   return this.firestore
+  //     .collection<IProductFirebaseCollection>('Products')
+  //     .doc(product.userId.toString())
+  //     .update(product);
+  // }
 
   public deleteProductById(productId: number, userId: number) {
     return from(this.firestore.collection<IProductFirebaseCollection>('Products').doc(productId.toString()).delete());
@@ -254,26 +249,20 @@ export class FirebaseService {
   }
 
   public createUser({ email }: IRegisterUser) {
-    return this.userCollection$.pipe(
-      take(1),
-      map((data) => {
-        const id = data?.length + 1;
-        const user: IUserFirebaseCollection = {
-          address: null,
-          email,
-          firstName: null,
-          id,
-          interests: null,
-          logo: null,
-          platform: null,
-          surname: null,
-          userName: null,
-        };
+    const id = Number(`${new Date().getTime()}${Math.floor(1000 + Math.random() * 9000)}`);
+    const user: IUserFirebaseCollection = {
+      address: null,
+      email,
+      firstName: null,
+      id,
+      interests: null,
+      logo: null,
+      platform: null,
+      surname: null,
+      userName: null,
+    };
 
-        return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(id.toString()).set(user));
-      }),
-      mergeAll()
-    );
+    return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(id.toString()).set(user));
   }
 
   public loginUserByCridentials({ email, password }: ILoginUser) {

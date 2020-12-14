@@ -11,7 +11,9 @@ import { PhotoService } from 'src/shared/services/photo.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {
   ADD_PRODUCT,
+  GET_ADDRESS_BY_GEOPOINT,
   GET_ALL_CATEGORIES,
+  GET_GEOPOINT_BY_ADDRESS,
   GET_PRODUCT,
   SET_PRODUCT_PHOTO,
 } from 'src/shared/store/actions/product.action';
@@ -27,6 +29,16 @@ export class ProductFormComponent {
   public categories$ = this.store.select('productState').pipe(
     filter((state) => state.categories?.length > 0),
     map((state) => state.categories)
+  );
+
+  public userAddress$ = this.store.select('productState').pipe(
+    filter((state) => state.userAddress !== null),
+    map((state) => state.userAddress)
+  );
+
+  public userGeopoint$ = this.store.select('productState').pipe(
+    filter((state) => state.userGeopoint !== null),
+    map((state) => state.userGeopoint)
   );
 
   public images$ = this.store.select('productState').pipe(
@@ -63,6 +75,7 @@ export class ProductFormComponent {
     private router: Router
   ) {
     this.geolocationService.currentPosition$.pipe(takeUntil(this.destroy$)).subscribe(({ longitude, latitude }) => {
+      this.store.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
       this.productForm.controls.position.setValue({ longitude, latitude });
     });
 
@@ -78,16 +91,33 @@ export class ProductFormComponent {
         this.trustedCapturedPhotos.push(this.photoService.formatToSafeURL(image));
       });
     });
+
+    this.userAddress$.pipe(takeUntil(this.destroy$)).subscribe((address) => {
+      this.productForm.controls.position.setValue(address);
+    });
+
+    this.userGeopoint$.pipe(takeUntil(this.destroy$)).subscribe(({ longitude, latitude }) => {
+      this.addProduct({ longitude, latitude });
+    });
   }
 
   public takePhoto() {
     this.mainService.dispatch(SET_PRODUCT_PHOTO());
   }
 
-  public submitModifyData(data: IProductFirebaseCollection) {
-    const productData = { ...data };
-    productData.userId = this.userId;
+  public submitModifyData() {
+    if (this.productForm.controls.position.value) {
+      this.store.dispatch(GET_GEOPOINT_BY_ADDRESS({ payload: this.productForm.controls.position.value }));
+    } else {
+      this.addProduct();
+    }
+  }
 
+  private addProduct(position?: { longitude: number; latitude: number }) {
+    const productData = { ...this.productForm.value };
+    productData.position = position ? position : null;
+
+    productData.userId = this.userId;
     this.mainService.dispatch(ADD_PRODUCT({ product: productData, files: this.capturedPhotos }));
     this.router.navigate([`/product/products`]);
   }

@@ -34,6 +34,8 @@ export interface IProductState {
   lastProduct: IProductFirebaseCollection;
   categories: string[];
   formImages: Blob[];
+  userAddress: string;
+  userGeopoint: { latitude; longitude };
 }
 
 export const storeConfig: ActionReducerMap<IInitialState> = {

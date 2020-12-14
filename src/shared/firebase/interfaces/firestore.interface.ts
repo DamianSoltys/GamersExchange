@@ -17,7 +17,7 @@ export interface IProductFirebaseCollection {
   id: number;
   name: string;
   platform: PlatformEnum[];
-  position: [];
+  position: { longitude; latitude } | string;
   possibleExchangeItem: string;
   productImages: Blob[];
   state: StateEnum;

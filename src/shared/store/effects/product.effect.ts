@@ -5,6 +5,7 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { ToastMessageEnum, ToastTypeEnum } from 'src/shared/interfaces/toast.interface';
 import { ErrorService } from 'src/shared/services/error.service';
 import { FirebaseService } from 'src/shared/services/firebase.service';
+import { GeolocationService } from 'src/shared/services/geolocation.service';
 import { PhotoService } from 'src/shared/services/photo.service';
 import {
   ADD_PRODUCT,
@@ -13,6 +14,9 @@ import {
   DELETE_USER_PRODUCT,
   DELETE_USER_PRODUCT_ERROR,
   DELETE_USER_PRODUCT_SUCCESS,
+  GET_ADDRESS_BY_GEOPOINT,
+  GET_ADDRESS_BY_GEOPOINT_ERROR,
+  GET_ADDRESS_BY_GEOPOINT_SUCCESS,
   GET_ALL_CATEGORIES,
   GET_ALL_CATEGORIES_ERROR,
   GET_ALL_CATEGORIES_SUCCESS,
@@ -22,6 +26,9 @@ import {
   GET_ALL_USER_PRODUCTS,
   GET_ALL_USER_PRODUCTS_ERROR,
   GET_ALL_USER_PRODUCTS_SUCCESS,
+  GET_GEOPOINT_BY_ADDRESS,
+  GET_GEOPOINT_BY_ADDRESS_ERROR,
+  GET_GEOPOINT_BY_ADDRESS_SUCCESS,
   GET_PRODUCT,
   GET_PRODUCT_ERROR,
   GET_PRODUCT_PHOTOS,
@@ -83,12 +90,14 @@ export class ProductEffects {
   deleteProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DELETE_USER_PRODUCT),
-      switchMap((payload) =>
-        combineLatest([this.fireService.deleteProductById(payload.productId, payload.userId), of(payload)])
-      ),
-      switchMap(([res, payload]) =>
-        combineLatest([this.fireService.removeProductImages(payload.productId, payload.userId), of(payload)])
-      ),
+      switchMap((payload) => {
+        console.log(payload);
+        return combineLatest([this.fireService.deleteProductById(payload.productId, payload.userId), of(payload)]);
+      }),
+      switchMap(([res, payload]) => {
+        console.log(payload);
+        return combineLatest([this.fireService.removeProductImages(payload.productId, payload.userId), of(payload)]);
+      }),
       switchMap(([res, payload]) =>
         this.errorService.handleResponse(DELETE_USER_PRODUCT_SUCCESS({ payload: payload.productId }), true, {
           type: ToastTypeEnum.SUCCESS,
@@ -172,9 +181,47 @@ export class ProductEffects {
     )
   );
 
+  getAddress$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_ADDRESS_BY_GEOPOINT),
+      switchMap(({ payload: { latitude, longitude } }) => this.geolocationService.getAddress({ latitude, longitude })),
+      switchMap(({ data }) =>
+        this.errorService.handleResponse(GET_ADDRESS_BY_GEOPOINT_SUCCESS({ payload: data[0].name }))
+      ),
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_ADDRESS_BY_GEOPOINT_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
+    )
+  );
+
+  getGeopoint$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_GEOPOINT_BY_ADDRESS),
+      switchMap(({ payload }) => this.geolocationService.getGeopoint(payload)),
+      switchMap(({ data }) =>
+        this.errorService.handleResponse(
+          GET_GEOPOINT_BY_ADDRESS_SUCCESS({
+            payload: { latitude: data[0].latitude, longitude: data[0].longitude },
+          })
+        )
+      ),
+      catchError((error, caught) => {
+        console.log(error);
+        return this.errorService.handleError(GET_GEOPOINT_BY_ADDRESS_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        });
+      })
+    )
+  );
+
   constructor(
     private fireService: FirebaseService,
     private actions$: Actions,
+    private geolocationService: GeolocationService,
     private errorService: ErrorService,
     private photoService: PhotoService
   ) {}

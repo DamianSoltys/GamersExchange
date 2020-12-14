@@ -3,9 +3,11 @@ import {
   ADD_PRODUCT_ERROR,
   ADD_PRODUCT_SUCCESS,
   DELETE_USER_PRODUCT_SUCCESS,
+  GET_ADDRESS_BY_GEOPOINT_SUCCESS,
   GET_ALL_CATEGORIES_SUCCESS,
   GET_ALL_PRODUCTS_SUCCESS,
   GET_ALL_USER_PRODUCTS_SUCCESS,
+  GET_GEOPOINT_BY_ADDRESS_SUCCESS,
   GET_PRODUCT_PHOTOS_SUCCESS,
   GET_PRODUCT_SUCCESS,
   SET_PRODUCT_PHOTO_SUCCESS,
@@ -19,6 +21,8 @@ export const initialState: IProductState = {
   categories: [],
   formImages: [],
   searchProducts: [],
+  userAddress: null,
+  userGeopoint: null,
 };
 
 export const productReducer = createReducer(
@@ -29,6 +33,8 @@ export const productReducer = createReducer(
     lastProduct: { ...state.lastProduct, productImages: action.payload },
   })),
   on(GET_ALL_USER_PRODUCTS_SUCCESS, (state, action) => ({ ...state, products: action.payload })),
+  on(GET_GEOPOINT_BY_ADDRESS_SUCCESS, (state, action) => ({ ...state, userGeopoint: action.payload })),
+  on(GET_ADDRESS_BY_GEOPOINT_SUCCESS, (state, action) => ({ ...state, useraddress: action.payload })),
   on(GET_ALL_PRODUCTS_SUCCESS, (state, action) => ({ ...state, searchProducts: action.payload })),
   on(GET_ALL_CATEGORIES_SUCCESS, (state, action) => ({ ...state, categories: action.payload })),
   on(SET_PRODUCT_PHOTO_SUCCESS, (state, action) => ({
@@ -43,10 +49,14 @@ export const productReducer = createReducer(
     ...state,
     products: [...state.products, action.product],
     formImages: [],
+    userGeopoint: null,
+    useraddress: null,
   })),
   on(ADD_PRODUCT_ERROR, (state, action) => ({
     ...state,
     formImages: [],
+    userGeopoint: null,
+    useraddress: null,
   })),
   on(LOGOUT_USER_SUCCESS, (state, action) => initialState)
 );

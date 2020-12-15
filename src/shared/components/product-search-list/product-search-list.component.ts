@@ -5,6 +5,7 @@ import { AlertController, IonSearchbar, ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
+import { IProductFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
 import { MainService } from 'src/shared/services/main.service';
 import { GET_ALL_PRODUCTS } from 'src/shared/store/actions/product.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
@@ -25,6 +26,7 @@ export class ProductSearchListComponent {
     filter((userState) => userState?.loggedUser?.id !== null),
     map((userState) => userState?.loggedUser?.id)
   );
+  private productList: IProductFirebaseCollection[];
   private destroy$ = new Subject();
 
   constructor(
@@ -38,6 +40,10 @@ export class ProductSearchListComponent {
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;
     });
+
+    this.productList$.pipe(takeUntil(this.destroy$)).subscribe((products) => {
+      this.productList = products;
+    });
   }
 
   public goToDetails(id: number) {
@@ -45,7 +51,10 @@ export class ProductSearchListComponent {
   }
 
   public async openMapModal() {
-    const modal = await this.modalController.create({ component: MapComponent, componentProps: { data: 'test' } });
+    const modal = await this.modalController.create({
+      component: MapComponent,
+      componentProps: { data: this.productList },
+    });
 
     return await modal.present();
   }

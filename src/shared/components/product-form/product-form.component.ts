@@ -74,10 +74,10 @@ export class ProductFormComponent {
     private geolocationService: GeolocationService,
     private router: Router
   ) {
-    this.geolocationService.currentPosition$.pipe(takeUntil(this.destroy$)).subscribe(({ longitude, latitude }) => {
-      this.store.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
-      this.productForm.controls.position.setValue({ longitude, latitude });
-    });
+    const { longitude, latitude } = this.geolocationService.currentPosition;
+
+    this.store.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
+    this.productForm.controls.position.setValue({ longitude, latitude });
 
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;

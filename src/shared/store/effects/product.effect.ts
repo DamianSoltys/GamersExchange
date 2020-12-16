@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { combineLatest, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -90,14 +91,12 @@ export class ProductEffects {
   deleteProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DELETE_USER_PRODUCT),
-      switchMap((payload) => {
-        console.log(payload);
-        return combineLatest([this.fireService.deleteProductById(payload.productId, payload.userId), of(payload)]);
-      }),
-      switchMap(([res, payload]) => {
-        console.log(payload);
-        return combineLatest([this.fireService.removeProductImages(payload.productId, payload.userId), of(payload)]);
-      }),
+      switchMap((payload) =>
+        combineLatest([this.fireService.deleteProductById(payload.productId, payload.userId), of(payload)])
+      ),
+      switchMap(([res, payload]) =>
+        combineLatest([this.fireService.removeProductImages(payload.productId, payload.userId), of(payload)])
+      ),
       switchMap(([res, payload]) =>
         this.errorService.handleResponse(DELETE_USER_PRODUCT_SUCCESS({ payload: payload.productId }), true, {
           type: ToastTypeEnum.SUCCESS,
@@ -147,17 +146,16 @@ export class ProductEffects {
   addProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ADD_PRODUCT),
-      switchMap((payload) => combineLatest([this.fireService.addProduct(payload.product, payload.files), of(payload)])),
-      switchMap(([red, payload]) =>
-        this.errorService.handleResponse(
-          ADD_PRODUCT_SUCCESS({ product: payload.product, files: payload.files }),
-          true,
-          {
-            type: ToastTypeEnum.SUCCESS,
-            message: ToastMessageEnum.ADD_PRODUCT_SUCCESS,
-          }
-        )
+      switchMap(({ product, files }) =>
+        combineLatest([this.fireService.addProduct(product, files), of({ product, files })])
       ),
+      switchMap(([res, { product, files }]) => {
+        this.navigation.back();
+        return this.errorService.handleResponse(ADD_PRODUCT_SUCCESS({ product, files }), true, {
+          type: ToastTypeEnum.SUCCESS,
+          message: ToastMessageEnum.ADD_PRODUCT_SUCCESS,
+        });
+      }),
       catchError((error, caught) =>
         this.errorService.handleError(ADD_PRODUCT_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
@@ -221,6 +219,7 @@ export class ProductEffects {
   constructor(
     private fireService: FirebaseService,
     private actions$: Actions,
+    private navigation: NavController,
     private geolocationService: GeolocationService,
     private errorService: ErrorService,
     private photoService: PhotoService

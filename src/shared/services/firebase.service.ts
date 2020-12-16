@@ -104,7 +104,6 @@ export class FirebaseService {
 
     return fileRef.listAll().pipe(
       switchMap((list) => {
-        console.log(list);
         const deleteObs = [];
 
         list.items.forEach((item) => {
@@ -119,7 +118,7 @@ export class FirebaseService {
           );
         });
 
-        return forkJoin(deleteObs);
+        return !!deleteObs.length ? forkJoin(deleteObs) : of([]);
       })
     );
   }
@@ -202,15 +201,13 @@ export class FirebaseService {
 
     productData.id = id;
     return from(
-      this.firestore
-        .collection<IProductFirebaseCollection>('Products')
-        .doc(productData.id.toString())
-        .set(productData)
-        .then(() => {
-          if (files?.length > 0) {
-            this.saveProductImages(files, productData.userId, productData.id);
-          }
-        })
+      this.firestore.collection<IProductFirebaseCollection>('Products').doc(productData.id.toString()).set(productData)
+    ).pipe(
+      map(() => {
+        if (files?.length > 0) {
+          this.saveProductImages(files, productData.userId, productData.id);
+        }
+      })
     );
   }
 

@@ -4,7 +4,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { from, Subject } from 'rxjs';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
 import { IProductFirebaseCollection, PlatformEnum } from 'src/shared/firebase/interfaces/firestore.interface';
 import { MainService } from 'src/shared/services/main.service';
 import { PhotoService } from 'src/shared/services/photo.service';
@@ -76,8 +76,7 @@ export class ProductFormComponent {
   ) {
     const { longitude, latitude } = this.geolocationService.currentPosition;
 
-    this.store.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
-    this.productForm.controls.position.setValue({ longitude, latitude });
+    this.mainService.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
 
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;
@@ -96,9 +95,26 @@ export class ProductFormComponent {
       this.productForm.controls.position.setValue(address);
     });
 
-    this.userGeopoint$.pipe(takeUntil(this.destroy$)).subscribe(({ longitude, latitude }) => {
-      this.addProduct({ longitude, latitude });
-    });
+    this.userGeopoint$
+      .pipe(
+        distinctUntilChanged((x, y) => x.latitude === y.latitude),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ longitude, latitude }) => {
+        console.log('addwithgeopoint');
+        this.addProduct({ longitude, latitude });
+      });
+
+    this.userAddress$
+      .pipe(
+        distinctUntilChanged((x, y) => x === y),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((address) => {
+        console.log(address);
+        this.productForm.controls.position.setValue(address);
+      });
+    console.log('test');
   }
 
   public takePhoto() {
@@ -107,19 +123,19 @@ export class ProductFormComponent {
 
   public submitModifyData() {
     if (this.productForm.controls.position.value) {
-      this.store.dispatch(GET_GEOPOINT_BY_ADDRESS({ payload: this.productForm.controls.position.value }));
+      this.mainService.dispatch(GET_GEOPOINT_BY_ADDRESS({ payload: this.productForm.controls.position.value }));
     } else {
       this.addProduct();
     }
   }
 
   private addProduct(position?: { longitude: number; latitude: number }) {
+    console.log('add');
     const productData = { ...this.productForm.value };
     productData.position = position ? position : null;
 
     productData.userId = this.userId;
     this.mainService.dispatch(ADD_PRODUCT({ product: productData, files: this.capturedPhotos }));
-    this.router.navigate([`/product/products`]);
   }
 
   ionViewDidEnter() {

@@ -6,11 +6,13 @@ import {
   GET_ADDRESS_BY_GEOPOINT_SUCCESS,
   GET_ALL_CATEGORIES_SUCCESS,
   GET_ALL_PRODUCTS_SUCCESS,
+  GET_ALL_USER_EXCHANGES_SUCCESS,
   GET_ALL_USER_PRODUCTS_SUCCESS,
   GET_GEOPOINT_BY_ADDRESS_SUCCESS,
   GET_PRODUCT_PHOTOS_SUCCESS,
   GET_PRODUCT_SUCCESS,
   SET_PRODUCT_PHOTO_SUCCESS,
+  GET_EXCHANGE_SUCCESS,
 } from '../actions/product.action';
 import { LOGOUT_USER_SUCCESS } from '../actions/user.action';
 import { IProductState } from '../interfaces/store.interface';
@@ -24,6 +26,7 @@ export const initialState: IProductState = {
   userAddress: null,
   userGeopoint: null,
   exchanges: [],
+  lastExchange: null,
 };
 
 export const productReducer = createReducer(
@@ -36,6 +39,8 @@ export const productReducer = createReducer(
   on(GET_ALL_USER_PRODUCTS_SUCCESS, (state, action) => ({ ...state, products: action.payload })),
   on(GET_GEOPOINT_BY_ADDRESS_SUCCESS, (state, action) => ({ ...state, userGeopoint: action.payload })),
   on(GET_ADDRESS_BY_GEOPOINT_SUCCESS, (state, action) => ({ ...state, userAddress: action.payload })),
+  on(GET_ALL_USER_EXCHANGES_SUCCESS, (state, action) => ({ ...state, exchanges: action.payload })),
+  on(GET_EXCHANGE_SUCCESS, (state, action) => ({ ...state, lastExchange: action.payload })),
   on(GET_ALL_PRODUCTS_SUCCESS, (state, action) => ({ ...state, searchProducts: action.payload })),
   on(GET_ALL_CATEGORIES_SUCCESS, (state, action) => ({ ...state, categories: action.payload })),
   on(SET_PRODUCT_PHOTO_SUCCESS, (state, action) => ({

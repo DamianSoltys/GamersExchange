@@ -130,31 +130,60 @@ export class FirebaseService {
 
   // EXCHANGE METHODS SECTION
   public getAllUserExchangesById(id: number) {
-  const ownerQuery = this.firestore
-    .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('ownerId', '==', id))
-    .get();
-  const buyerQuery = this.firestore
-    .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('buyerId', '==', id))
-    .get();
+    const ownerQuery = this.firestore
+      .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('ownerId', '==', id))
+      .get();
+    const buyerQuery = this.firestore
+      .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('buyerId', '==', id))
+      .get();
 
-  return  combineLatest([ownerQuery,buyerQuery]).pipe(
-    map(([buyerQuery,ownerQuery]) => {
-      const rawData = [].concat(buyerQuery,ownerQuery);
-      const filteredData = [];
+    return combineLatest([ownerQuery, buyerQuery]).pipe(
+      map(([buyerQuery, ownerQuery]) => {
+        const rawData = [].concat(buyerQuery, ownerQuery);
+        const filteredData = [];
 
-      rawData.forEach((data) => {
-        if (!!data.docs?.length) {
-          data.docs.forEach((doc) => {
-            filteredData.push(doc.data());
-          });
-        }
-      });
+        rawData.forEach((data) => {
+          if (!!data.docs?.length) {
+            data.docs.forEach((doc) => {
+              filteredData.push(doc.data());
+            });
+          }
+        });
 
-      return filteredData.filter(
-        (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+        return filteredData.filter((value, index, array) => array.findIndex((data) => data.id === value.id) === index);
+      })
+    );
+  }
+
+  public addExchange(exchange: IExchangeFirebaseCollection) {
+    const id = Number(`${new Date().getTime()}${Math.floor(1000 + Math.random() * 9000)}`);
+    const exchangeData = { ...exchange };
+
+    exchangeData.id = id;
+    return from(
+      this.firestore
+        .collection<IExchangeFirebaseCollection>('Exchanges')
+        .doc(exchangeData.id.toString())
+        .set(exchangeData)
+    );
+  }
+
+  public getExchangeById(id: number) {
+    return this.firestore
+      .collection<IExchangeFirebaseCollection>('Exchanges', (reference) => reference.where('id', '==', Number(id)))
+      .get()
+      .pipe(
+        map((snapshot) =>
+          snapshot.empty ? null : ((snapshot.docs[0].data() as unknown) as IExchangeFirebaseCollection)
+        )
       );
-    })
-  )
+  }
+
+  public modifyExchangeData(exchangeData: IExchangeFirebaseCollection) {
+    return this.firestore
+      .collection<IExchangeFirebaseCollection>('Exchanges')
+      .doc(exchangeData.id.toString())
+      .update(exchangeData);
   }
 
   // PRODUCT METHODS SECTION

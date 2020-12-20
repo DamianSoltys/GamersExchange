@@ -27,6 +27,8 @@ export interface IProductFirebaseCollection {
 export interface IExchangeFirebaseCollection {
   buyerOfferData: IExchangeOfferData;
   ownerOfferData: IExchangeOfferData;
+  ownerId: number;
+  buyerId: number;
   id: number;
   status: StatusEnum;
 }
@@ -50,6 +52,7 @@ export interface IUserAddress {
 
 export enum StatusEnum {
   PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
   SUCCESS = 'SUCCESS',
   CANCELED = 'CANCELED',
 }

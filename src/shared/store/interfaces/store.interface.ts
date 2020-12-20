@@ -38,6 +38,7 @@ export interface IProductState {
   userAddress: string;
   userGeopoint: { latitude; longitude };
   exchanges: IExchangeFirebaseCollection[];
+  lastExchange: IExchangeFirebaseCollection;
 }
 
 export const storeConfig: ActionReducerMap<IInitialState> = {

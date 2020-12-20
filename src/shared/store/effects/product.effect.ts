@@ -9,7 +9,10 @@ import { FirebaseService } from 'src/shared/services/firebase.service';
 import { GeolocationService } from 'src/shared/services/geolocation.service';
 import { PhotoService } from 'src/shared/services/photo.service';
 import {
+  ADD_EXCHANGE,
+  ADD_EXCHANGE_SUCCESS,
   ADD_PRODUCT,
+  ADD_EXCHANGE_ERROR,
   ADD_PRODUCT_ERROR,
   ADD_PRODUCT_SUCCESS,
   DELETE_USER_PRODUCT,
@@ -39,6 +42,15 @@ import {
   SET_PRODUCT_PHOTO,
   SET_PRODUCT_PHOTO_ERROR,
   SET_PRODUCT_PHOTO_SUCCESS,
+  GET_ALL_USER_EXCHANGES,
+  GET_ALL_USER_EXCHANGES_SUCCESS,
+  GET_ALL_USER_EXCHANGES_ERROR,
+  GET_EXCHANGE,
+  GET_EXCHANGE_SUCCESS,
+  GET_EXCHANGE_ERROR,
+  CHANGE_EXCHANGE_STATUS,
+  CHANGE_EXCHANGE_STATUS_SUCCESS,
+  CHANGE_EXCHANGE_STATUS_ERROR,
 } from '../actions/product.action';
 
 @Injectable()
@@ -213,6 +225,68 @@ export class ProductEffects {
           message: ToastMessageEnum.GET_DATA_ERROR,
         });
       })
+    )
+  );
+
+  addExchange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ADD_EXCHANGE),
+      switchMap(({ payload }) => combineLatest([this.fireService.addExchange(payload), of(payload)])),
+      switchMap(([res, payload]) => {
+        this.navigation.back();
+        return this.errorService.handleResponse(ADD_EXCHANGE_SUCCESS({ payload }), true, {
+          type: ToastTypeEnum.SUCCESS,
+          message: ToastMessageEnum.ADD_EXCHANGE_SUCCESS,
+        });
+      }),
+      catchError((error, caught) =>
+        this.errorService.handleError(ADD_EXCHANGE_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.ADD_EXCHANGE_ERROR,
+        })
+      )
+    )
+  );
+
+  getExchanges$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_ALL_USER_EXCHANGES),
+      switchMap(({ payload }) => this.fireService.getAllUserExchangesById(payload)),
+      switchMap((payload) => this.errorService.handleResponse(GET_ALL_USER_EXCHANGES_SUCCESS({ payload }))),
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_ALL_USER_EXCHANGES_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
+    )
+  );
+
+  getExchange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_EXCHANGE),
+      switchMap(({ payload }) => this.fireService.getExchangeById(payload)),
+      switchMap((payload) => this.errorService.handleResponse(GET_EXCHANGE_SUCCESS({ payload }))),
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_EXCHANGE_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
+    )
+  );
+
+  updateExchange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CHANGE_EXCHANGE_STATUS),
+      switchMap(({ payload }) => combineLatest([this.fireService.modifyExchangeData(payload), of(payload)])),
+      switchMap(([res, payload]) => this.errorService.handleResponse(CHANGE_EXCHANGE_STATUS_SUCCESS({ payload }))),
+      catchError((error, caught) =>
+        this.errorService.handleError(CHANGE_EXCHANGE_STATUS_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
     )
   );
 

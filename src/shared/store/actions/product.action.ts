@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
-import { IExchangeFirebaseCollection, IProductFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
+import {
+  IExchangeFirebaseCollection,
+  IProductFirebaseCollection,
+} from 'src/shared/firebase/interfaces/firestore.interface';
 
 export const GET_ALL_USER_PRODUCTS = createAction('[PRODUCT] Get All User Products', props<{ payload: number }>());
 export const GET_ALL_USER_PRODUCTS_SUCCESS = createAction(
@@ -102,22 +105,29 @@ export const GET_ALL_USER_EXCHANGES_ERROR = createAction(
   props<{ payload: Error }>()
 );
 
-export const ADD_EXCHANGE = createAction(
-  '[PRODUCT] Add Exchange',
-  props<{ payload: IExchangeFirebaseCollection;  }>()
-);
-export const ADD_EXCHANG_SUCCESS = createAction(
+export const ADD_EXCHANGE = createAction('[PRODUCT] Add Exchange', props<{ payload: IExchangeFirebaseCollection }>());
+export const ADD_EXCHANGE_SUCCESS = createAction(
   '[PRODUCT] Add Exchange Success',
-  props<{ payload: IExchangeFirebaseCollection; }>()
+  props<{ payload: IExchangeFirebaseCollection }>()
 );
-export const ADD_EXCHANG_ERROR = createAction('[PRODUCT] Add Exchange Error', props<{ payload: Error }>());
+export const ADD_EXCHANGE_ERROR = createAction('[PRODUCT] Add Exchange Error', props<{ payload: Error }>());
 
-export const CHANGE_EXCHANG_STATUS = createAction(
+export const CHANGE_EXCHANGE_STATUS = createAction(
   '[PRODUCT] Change Exchange Status',
-  props<{ payload: IExchangeFirebaseCollection;  }>()
+  props<{ payload: IExchangeFirebaseCollection }>()
 );
-export const CHANGE_EXCHANG_STATUS_SUCCESS = createAction(
+export const CHANGE_EXCHANGE_STATUS_SUCCESS = createAction(
   '[PRODUCT] Change Exchange Status Success',
-  props<{ payload: IExchangeFirebaseCollection; }>()
+  props<{ payload: IExchangeFirebaseCollection }>()
 );
-export const CHANGE_EXCHANG_STATUS_ERROR = createAction('[PRODUCT] Change Exchange Status Error', props<{ payload: Error }>());
+export const CHANGE_EXCHANGE_STATUS_ERROR = createAction(
+  '[PRODUCT] Change Exchange Status Error',
+  props<{ payload: Error }>()
+);
+
+export const GET_EXCHANGE = createAction('[PRODUCT] Get Exchange', props<{ payload: number }>());
+export const GET_EXCHANGE_SUCCESS = createAction(
+  '[PRODUCT] Get Exchange Success',
+  props<{ payload: IExchangeFirebaseCollection }>()
+);
+export const GET_EXCHANGE_ERROR = createAction('[PRODUCT] Get Exchange Error', props<{ payload: Error }>());

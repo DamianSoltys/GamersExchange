@@ -1,28 +1,34 @@
 <ion-content class="ion-padding product-list-component">
- <ion-list>
-      <div class="product-container ion-margin-bottom" *ngFor="let product of productList$ | async; let productNumber = index">
-        <ion-item>
-          <ion-label>Numer:</ion-label>
-          <span>{{ productNumber + 1 }}</span>
-        </ion-item>
-        <ion-item>
-          <ion-label>Nazwa:</ion-label>
-          <span>{{ product.name }}</span>
-        </ion-item>
-        <ion-item>
-          <ion-label>Stan:</ion-label>
-          <span>{{ product.state }}</span>
-        </ion-item>
-        <ion-item>
-          <ion-button class="action-button" color="danger" (click)="deleteProduct(product.id)"
-            ><ion-icon name="trash"></ion-icon
-          ></ion-button>
-          <ion-button class="action-button" (click)="goToDetails(product.id)"
-            ><ion-icon name="arrow-redo-circle"></ion-icon
-          ></ion-button>
-        </ion-item>
-      </div>
-</ion-list>
+  <ion-list>
+    <div
+      class="product-container ion-margin-bottom"
+      *ngFor="let exchange of exchangesList$ | async; let exchangeNumber = index"
+    >
+      <ion-item>
+        <ion-label>Numer:</ion-label>
+        <span>{{ exchangeNumber + 1 }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Nazwa:</ion-label>
+        <span>{{ exchange?.ownerOfferData?.productName }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Stan:</ion-label>
+        <span>{{ exchange.status }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-button class="action-button" color="danger" (click)="deleteProduct(exchange.id)"
+          ><ion-icon name="trash"></ion-icon
+        ></ion-button>
+        <ion-button class="action-button" color="success" (click)="modifyProduct(exchange)"
+          ><ion-icon name="chatbubbles"></ion-icon
+        ></ion-button>
+        <ion-button class="action-button" (click)="goToDetails(exchange?.ownerOfferData?.productId)"
+          ><ion-icon name="arrow-redo-circle"></ion-icon
+        ></ion-button>
+      </ion-item>
+    </div>
+  </ion-list>
 
   <ion-fab vertical="top" horizontal="end" slot="fixed" class="add-new-product">
     <ion-fab-button color="success" routerLink="/product/add">

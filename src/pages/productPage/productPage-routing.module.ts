@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { OfferListComponent } from 'src/shared/components/offerList/offer-list.component';
 import { ProductFormComponent } from 'src/shared/components/product-form/product-form.component';
 import { ProductListComponent } from 'src/shared/components/product-list/product-list.component';
 import { ProductComponent } from 'src/shared/components/product/product.component';
@@ -14,6 +15,10 @@ const routes: Routes = [
   {
     path: 'products',
     component: ProductListComponent,
+  },
+  {
+    path: 'offers',
+    component: OfferListComponent,
   },
   {
     path: 'add',

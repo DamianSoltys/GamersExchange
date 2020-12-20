@@ -1,10 +1,10 @@
 <ion-content class="ion-padding product-list-component">
-  <ion-grid>
-    <ion-row>
+ <ion-list>
+    <ion-item>
       <ion-searchbar #searchQuery></ion-searchbar>
-    </ion-row>
-    <ion-row class="ion-margin-bottom" *ngFor="let product of productList$ | async; let productNumber = index">
-      <div class="product-container">
+    </ion-item>
+    
+      <div class="product-container ion-margin-bottom" *ngFor="let product of productList$ | async; let productNumber = index">
         <ion-item>
           <ion-label>Numer:</ion-label>
           <span>{{ productNumber + 1 }}</span>
@@ -23,8 +23,7 @@
           ></ion-button>
         </ion-item>
       </div>
-    </ion-row>
-  </ion-grid>
+    </ion-list>
 
   <ion-fab vertical="top" horizontal="end" slot="fixed" class="add-new-product">
     <ion-fab-button color="success" (click)="openMapModal()">

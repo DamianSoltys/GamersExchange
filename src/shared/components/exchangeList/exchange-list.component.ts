@@ -9,11 +9,11 @@ import { DELETE_USER_PRODUCT, GET_ALL_USER_PRODUCTS } from 'src/shared/store/act
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 
 @Component({
-  selector: 'app-offer-list',
-  templateUrl: './offer-list.component.html',
-  styleUrls: ['./offer-list.component.scss'],
+  selector: 'app-exchange-list',
+  templateUrl: './exchange-list.component.html',
+  styleUrls: ['./exchange-list.component.scss'],
 })
-export class OfferListComponent {
+export class ExchangeListComponent {
   public productList$ = this.store.select('productState').pipe(map((productState) => productState.products));
   public userId: number;
 

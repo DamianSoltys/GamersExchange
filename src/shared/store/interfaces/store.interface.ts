@@ -1,5 +1,6 @@
 import { ActionReducerMap } from '@ngrx/store';
 import {
+  IExchangeFirebaseCollection,
   IProductFirebaseCollection,
   IUserFirebaseCollection,
 } from 'src/shared/firebase/interfaces/firestore.interface';
@@ -36,6 +37,7 @@ export interface IProductState {
   formImages: Blob[];
   userAddress: string;
   userGeopoint: { latitude; longitude };
+  exchanges: IExchangeFirebaseCollection[];
 }
 
 export const storeConfig: ActionReducerMap<IInitialState> = {

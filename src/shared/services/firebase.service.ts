@@ -128,6 +128,35 @@ export class FirebaseService {
     return this.categoryCollection$.pipe(map((categories) => Object.values(categories[0])));
   }
 
+  // EXCHANGE METHODS SECTION
+  public getAllUserExchangesById(id: number) {
+  const ownerQuery = this.firestore
+    .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('ownerId', '==', id))
+    .get();
+  const buyerQuery = this.firestore
+    .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('buyerId', '==', id))
+    .get();
+
+  return  combineLatest([ownerQuery,buyerQuery]).pipe(
+    map(([buyerQuery,ownerQuery]) => {
+      const rawData = [].concat(buyerQuery,ownerQuery);
+      const filteredData = [];
+
+      rawData.forEach((data) => {
+        if (!!data.docs?.length) {
+          data.docs.forEach((doc) => {
+            filteredData.push(doc.data());
+          });
+        }
+      });
+
+      return filteredData.filter(
+        (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+      );
+    })
+  )
+  }
+
   // PRODUCT METHODS SECTION
   public getSearchedProducts(query: string): Observable<IProductFirebaseCollection[]> {
     const categoryQuery = this.firestore

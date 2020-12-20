@@ -23,6 +23,7 @@ export const initialState: IProductState = {
   searchProducts: [],
   userAddress: null,
   userGeopoint: null,
+  exchanges: [],
 };
 
 export const productReducer = createReducer(

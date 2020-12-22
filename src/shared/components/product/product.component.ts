@@ -20,7 +20,7 @@ import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.css'],
+  styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent {
   public product$ = this.store.select('productState').pipe(
@@ -54,6 +54,7 @@ export class ProductComponent {
     private photoService: PhotoService,
     private mainService: MainService,
     private actions$: Actions,
+    private router: Router,
     private fb: FormBuilder
   ) {
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
@@ -81,6 +82,10 @@ export class ProductComponent {
       this.productForm.patchValue(product);
       this.productForm.disable();
     });
+  }
+
+  public goToExchangeForm() {
+    this.router.navigate(['/product/add/exchange'], { state: this.productData });
   }
 
   ionViewDidEnter() {

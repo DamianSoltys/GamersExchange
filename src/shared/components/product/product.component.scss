@@ -1,0 +1,16 @@
+.product-container,
+.action-button {
+  width: 100%;
+  position: relative;
+}
+
+.fab-vertical-top {
+  top: -20px;
+  right: -20px;
+
+  .fab-icon {
+    position: relative;
+    top: 8px;
+    right: 8px;
+  }
+}

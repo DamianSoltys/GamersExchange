@@ -4,6 +4,7 @@ import { ExchangeListComponent } from 'src/shared/components/exchangeList/exchan
 import { ProductFormComponent } from 'src/shared/components/product-form/product-form.component';
 import { ProductListComponent } from 'src/shared/components/product-list/product-list.component';
 import { ProductComponent } from 'src/shared/components/product/product.component';
+import { ExchangeFormComponent } from 'src/shared/components/exchange-form/exchange-form.component';
 
 const routes: Routes = [
   {
@@ -20,8 +21,12 @@ const routes: Routes = [
     component: ExchangeListComponent,
   },
   {
-    path: 'add',
+    path: 'add/product',
     component: ProductFormComponent,
+  },
+  {
+    path: 'add/exchange',
+    component: ExchangeFormComponent,
   },
   {
     path: 'details/:id',
@@ -32,4 +37,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ProductPageRoutingModule {}
+export class ProductPageRoutingModule { }

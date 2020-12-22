@@ -1,17 +1,10 @@
 <ion-content class="ion-padding product-component">
-  <ion-slides [options]="{ slidesPerView: 'auto', zoom: false, grabCursor: true }">
-    <ion-slide *ngFor="let trustedCapturedPhoto of trustedCapturedPhotos">
-      <ion-col>
-        <ion-img class="img-element" *ngIf="trustedCapturedPhoto" [src]="trustedCapturedPhoto"></ion-img>
-      </ion-col>
-    </ion-slide>
-  </ion-slides>
   <form [formGroup]="productForm">
     <ion-grid>
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Nazwa</ion-label>
+            <ion-label position="floating">Nazwa *</ion-label>
             <ion-input formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
@@ -19,8 +12,16 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Stan</ion-label>
+            <ion-label position="floating">Stan *</ion-label>
             <ion-input formControlName="state"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Lokalizacja produktu</ion-label>
+            <ion-input formControlName="position"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -35,7 +36,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Opis</ion-label>
+            <ion-label position="floating">Opis *</ion-label>
             <ion-input formControlName="description"></ion-input>
           </ion-item>
         </ion-col>
@@ -51,25 +52,32 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Kategorie</ion-label>
-            <ion-input formControlName="category"></ion-input>
+            <ion-label position="floating">Kategorie *</ion-label>
+            <ion-select interface="popover" formControlName="category" multiple>
+              <ion-select-option *ngFor="let category of categories$ | async" [value]="category">{{
+                category
+              }}</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Platformy</ion-label>
-            <ion-input formControlName="platform"></ion-input>
+            <ion-label position="floating">Platformy *</ion-label>
+            <ion-select interface="popover" formControlName="platform" multiple>
+              <ion-select-option *ngFor="let platform of platformOptions" [value]="platform">{{
+                platform
+              }}</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
-  </form>
 
-  <ion-fab vertical="top" horizontal="end" slot="fixed" class="add-new-product">
-    <ion-fab-button color="success" (click)="goToExchangeForm()">
-      <ion-icon name="swap-horizontal" class="fab-icon"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <ion-button class="ion-margin-vertical" [disabled]="productForm.invalid" expand="block"
+      (click)="submitModifyData(productForm.value)">
+      <ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Dodaj ofertę
+    </ion-button>
+  </form>
 </ion-content>

@@ -5,7 +5,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { from, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
-import { IProductFirebaseCollection, PlatformEnum } from 'src/shared/firebase/interfaces/firestore.interface';
+import {
+  IExchangeFirebaseCollection,
+  IProductFirebaseCollection,
+  PlatformEnum,
+} from 'src/shared/firebase/interfaces/firestore.interface';
 import { MainService } from 'src/shared/services/main.service';
 import { PhotoService } from 'src/shared/services/photo.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -27,18 +31,13 @@ import { Location } from '@angular/common';
   styleUrls: ['./exchange-form.component.css'],
 })
 export class ExchangeFormComponent {
-
   public userId: number;
   public productData: IProductFirebaseCollection;
-  public productForm = this.fb.group({
-    name: [null, Validators.required],
-    state: [null, Validators.required],
-    approximatePrice: [null],
-    platform: [null, Validators.required],
-    category: [null, Validators.required],
-    description: [null, Validators.required],
-    position: [null],
-    possibleExchangeItem: [null],
+  public exchangeForm = this.fb.group({
+    email: [null],
+    phone: [null],
+    description: [null],
+    productName: [null],
   });
 
   private userId$ = this.store.select('userState').pipe(
@@ -63,8 +62,7 @@ export class ExchangeFormComponent {
     this.productData = this.location.getState() as IProductFirebaseCollection;
   }
 
-
-  public submitModifyData() {
+  public submitModifyData(data: IExchangeFirebaseCollection) {
     // test
   }
 

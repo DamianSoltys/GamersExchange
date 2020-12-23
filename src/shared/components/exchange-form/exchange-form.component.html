@@ -1,42 +1,18 @@
 <ion-content class="ion-padding product-component">
-  <form [formGroup]="productForm">
+  <form [formGroup]="exchangeForm">
     <ion-grid>
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Nazwa *</ion-label>
-            <ion-input formControlName="name"></ion-input>
+            <ion-label position="floating">Nazwa oferowanego produktu</ion-label>
+            <ion-input formControlName="productName"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Stan *</ion-label>
-            <ion-input formControlName="state"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Lokalizacja produktu</ion-label>
-            <ion-input formControlName="position"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Przybliżona cena</ion-label>
-            <ion-input formControlName="approximatePrice"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Opis *</ion-label>
+            <ion-label position="floating">Opis/Komentarz</ion-label>
             <ion-input formControlName="description"></ion-input>
           </ion-item>
         </ion-col>
@@ -44,39 +20,27 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Propozcja wymiany</ion-label>
-            <ion-input formControlName="possibleExchangeItem"></ion-input>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input formControlName="email"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Kategorie *</ion-label>
-            <ion-select interface="popover" formControlName="category" multiple>
-              <ion-select-option *ngFor="let category of categories$ | async" [value]="category">{{
-                category
-              }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-item>
-            <ion-label position="floating">Platformy *</ion-label>
-            <ion-select interface="popover" formControlName="platform" multiple>
-              <ion-select-option *ngFor="let platform of platformOptions" [value]="platform">{{
-                platform
-              }}</ion-select-option>
-            </ion-select>
+            <ion-label position="floating">Telefon</ion-label>
+            <ion-input formControlName="phone"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
 
-    <ion-button class="ion-margin-vertical" [disabled]="productForm.invalid" expand="block"
-      (click)="submitModifyData(productForm.value)">
+    <ion-button
+      class="ion-margin-vertical"
+      [disabled]="exchangeForm.invalid"
+      expand="block"
+      (click)="submitModifyData(exchangeForm.value)"
+    >
       <ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Dodaj ofertę
     </ion-button>
   </form>

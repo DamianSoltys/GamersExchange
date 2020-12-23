@@ -42,6 +42,7 @@ export class ProfilePageComponent implements OnDestroy {
     userName: [null],
     platform: [null],
     interests: [null],
+    phone: [null],
     address: this.fb.group({
       city: [null],
       country: [null],

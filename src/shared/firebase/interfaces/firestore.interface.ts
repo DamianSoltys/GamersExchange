@@ -1,6 +1,7 @@
 export interface IUserFirebaseCollection {
   address: IUserAddress;
   email: string;
+  phone: string;
   firstName: string;
   id: number;
   interests: string[];
@@ -39,6 +40,9 @@ export interface IExchangeOfferData {
   status: StatusEnum;
   userId: number;
   userName: string;
+  email: string;
+  phone: string;
+  description: string;
 }
 
 export interface IUserAddress {

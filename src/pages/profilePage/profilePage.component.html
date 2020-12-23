@@ -31,6 +31,14 @@
       <ion-row>
         <ion-col>
           <ion-item>
+            <ion-label position="floating">Telefon</ion-label>
+            <ion-input formControlName="phone" disabled="true" value="{{ (loggedUser$ | async)?.phone }}"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
             <ion-label position="floating">Imie</ion-label>
             <ion-input formControlName="firstName"></ion-input>
           </ion-item>

@@ -15,6 +15,18 @@
         <span>{{ exchange.status }}</span>
       </ion-item>
       <ion-item>
+        <ion-label>Opis oferującego:</ion-label>
+        <span>{{ exchange?.buyerOfferData?.description }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Email oferującego:</ion-label>
+        <span>{{exchange?.buyerOfferData?.email}}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Telefon oferującego:</ion-label>
+        <span>{{exchange?.buyerOfferData?.phone}}</span>
+      </ion-item>
+      <ion-item>
         <ion-button class="action-button" color="danger" (click)="deleteProduct(exchange.id)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>

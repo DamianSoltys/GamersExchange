@@ -67,7 +67,7 @@
     </ion-grid>
   </form>
 
-  <ion-fab vertical="top" horizontal="end" slot="fixed" class="add-new-product">
+  <ion-fab vertical="top" *ngIf="!isOwner" horizontal="end" slot="fixed" class="add-new-product">
     <ion-fab-button color="success" (click)="goToExchangeForm()">
       <ion-icon name="swap-horizontal" class="fab-icon"></ion-icon>
     </ion-fab-button>

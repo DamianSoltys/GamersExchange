@@ -4,7 +4,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Nazwa oferowanego produktu</ion-label>
+            <ion-label position="floating">Nazwa oferowanego produktu *</ion-label>
             <ion-input formControlName="productName"></ion-input>
           </ion-item>
         </ion-col>
@@ -20,7 +20,7 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Email</ion-label>
+            <ion-label position="floating">Email *</ion-label>
             <ion-input formControlName="email"></ion-input>
           </ion-item>
         </ion-col>
@@ -28,19 +28,15 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-label position="floating">Telefon</ion-label>
+            <ion-label position="floating">Telefon *</ion-label>
             <ion-input formControlName="phone"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
 
-    <ion-button
-      class="ion-margin-vertical"
-      [disabled]="exchangeForm.invalid"
-      expand="block"
-      (click)="submitModifyData(exchangeForm.value)"
-    >
+    <ion-button class="ion-margin-vertical" [disabled]="exchangeForm.invalid" expand="block"
+      (click)="submitModifyData(exchangeForm.value)">
       <ion-icon name="create-outline" class="ion-margin-end"></ion-icon>Dodaj ofertę
     </ion-button>
   </form>

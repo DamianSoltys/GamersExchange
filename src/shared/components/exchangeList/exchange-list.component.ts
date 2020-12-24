@@ -12,8 +12,11 @@ import {
   GET_ALL_USER_EXCHANGES,
   GET_ALL_USER_EXCHANGES_SUCCESS,
   GET_ALL_USER_PRODUCTS,
+  CHANGE_EXCHANGE_STATUS_SUCCESS,
+  DELETE_EXCHANGE,
 } from 'src/shared/store/actions/product.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-exchange-list',
@@ -33,11 +36,16 @@ export class ExchangeListComponent {
   constructor(
     private store: Store<IInitialState>,
     private router: Router,
+    private actions$: Actions,
     private alertController: AlertController,
     private mainService: MainService
   ) {
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;
+    });
+
+    this.actions$.pipe(ofType(CHANGE_EXCHANGE_STATUS_SUCCESS), takeUntil(this.destroy$)).subscribe(() => {
+      this.mainService.dispatch(GET_ALL_USER_EXCHANGES({ payload: this.userId }));
     });
   }
 
@@ -63,7 +71,7 @@ export class ExchangeListComponent {
         {
           text: 'Potwierdź',
           handler: () => {
-            // this.mainService.dispatch(DELETE_USER_PRODUCT({ productId: id, userId: this.userId }));
+            this.mainService.dispatch(DELETE_EXCHANGE({ payload: id }));
           },
         },
       ],
@@ -82,7 +90,8 @@ export class ExchangeListComponent {
           type: 'radio',
           label: this.getStatusToChange(exchange),
           value: this.getStatusToChange(exchange),
-          checked: true,
+          checked: !this.isDisabled(exchange),
+          disabled: this.isDisabled(exchange),
         },
         {
           name: 'CANCELED',
@@ -96,7 +105,7 @@ export class ExchangeListComponent {
         {
           text: 'Potwierdź',
           handler: (status) => {
-            const modifiedExchange = { ...exchange };
+            const modifiedExchange: IExchangeFirebaseCollection = JSON.parse(JSON.stringify(exchange));
 
             if (status !== StatusEnum.CANCELED) {
               if (this.isOwner(exchange.ownerId)) {
@@ -147,6 +156,12 @@ export class ExchangeListComponent {
     ) {
       return StatusEnum.SUCCESS;
     }
+  }
+
+  private isDisabled(exchange: IExchangeFirebaseCollection) {
+    const { ownerOfferData: { status: ownerStatus }, buyerOfferData: { status: buyerStatus } } = exchange;
+
+    return ownerStatus !== buyerStatus;
   }
 
   ionViewDidEnter() {

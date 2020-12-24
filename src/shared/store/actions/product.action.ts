@@ -112,6 +112,12 @@ export const ADD_EXCHANGE_SUCCESS = createAction(
 );
 export const ADD_EXCHANGE_ERROR = createAction('[PRODUCT] Add Exchange Error', props<{ payload: Error }>());
 
+export const DELETE_EXCHANGE = createAction('[PRODUCT] Delete Exchange', props<{ payload: number }>());
+export const DELETE_EXCHANGE_SUCCESS = createAction(
+  '[PRODUCT] Delete Exchange Success', props<{ payload: number }>()
+);
+export const DELETE_EXCHANGE_ERROR = createAction('[PRODUCT] Delete Exchange Error', props<{ payload: Error }>());
+
 export const CHANGE_EXCHANGE_STATUS = createAction(
   '[PRODUCT] Change Exchange Status',
   props<{ payload: IExchangeFirebaseCollection }>()

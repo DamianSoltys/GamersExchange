@@ -51,6 +51,9 @@ import {
   CHANGE_EXCHANGE_STATUS,
   CHANGE_EXCHANGE_STATUS_SUCCESS,
   CHANGE_EXCHANGE_STATUS_ERROR,
+  DELETE_EXCHANGE,
+  DELETE_EXCHANGE_SUCCESS,
+  DELETE_EXCHANGE_ERROR,
 } from '../actions/product.action';
 
 @Injectable()
@@ -231,7 +234,8 @@ export class ProductEffects {
   addExchange$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ADD_EXCHANGE),
-      switchMap(({ payload }) => combineLatest([this.fireService.addExchange(payload), of(payload)])),
+      switchMap(({ payload }) => combineLatest([this.fireService.getUserById(payload.ownerId), of(payload)])),
+      switchMap(([res, payload]) => combineLatest([this.fireService.addExchange(payload, res), of(payload)])),
       switchMap(([res, payload]) => {
         this.navigation.back();
         return this.errorService.handleResponse(ADD_EXCHANGE_SUCCESS({ payload }), true, {
@@ -280,11 +284,31 @@ export class ProductEffects {
     this.actions$.pipe(
       ofType(CHANGE_EXCHANGE_STATUS),
       switchMap(({ payload }) => combineLatest([this.fireService.modifyExchangeData(payload), of(payload)])),
-      switchMap(([res, payload]) => this.errorService.handleResponse(CHANGE_EXCHANGE_STATUS_SUCCESS({ payload }))),
+      switchMap(([res, payload]) => this.errorService.handleResponse(CHANGE_EXCHANGE_STATUS_SUCCESS({ payload }), true, {
+        type: ToastTypeEnum.SUCCESS,
+        message: ToastMessageEnum.CHANGE_EXCHANGE_SUCCESS,
+      })),
       catchError((error, caught) =>
         this.errorService.handleError(CHANGE_EXCHANGE_STATUS_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
-          message: ToastMessageEnum.GET_DATA_ERROR,
+          message: ToastMessageEnum.CHANGE_EXCHANGE_ERROR,
+        })
+      )
+    )
+  );
+
+  deleteExchange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DELETE_EXCHANGE),
+      switchMap(({ payload }) => combineLatest([this.fireService.deleteExchangeById(payload), of(payload)])),
+      switchMap(([res, payload]) => this.errorService.handleResponse(DELETE_EXCHANGE_SUCCESS({ payload }), true, {
+        type: ToastTypeEnum.SUCCESS,
+        message: ToastMessageEnum.DELETE_EXCHANGE_SUCCESS,
+      })),
+      catchError((error, caught) =>
+        this.errorService.handleError(DELETE_EXCHANGE_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.DELETE_EXCHANGE_ERROR,
         })
       )
     )
@@ -297,5 +321,5 @@ export class ProductEffects {
     private geolocationService: GeolocationService,
     private errorService: ErrorService,
     private photoService: PhotoService
-  ) {}
+  ) { }
 }

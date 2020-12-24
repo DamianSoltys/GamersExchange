@@ -84,6 +84,10 @@ export class ProductComponent {
     });
   }
 
+  public get isOwner() {
+    return this.productData?.userId === this?.userId;
+  }
+
   public goToExchangeForm() {
     this.router.navigate(['/product/add/exchange'], { state: this.productData });
   }

@@ -31,6 +31,8 @@ export enum ToastMessageEnum {
   ADD_PRODUCT_SUCCESS = 'Produkt dodany pomyślnie',
   ADD_EXCHANGE_ERROR = 'Nie udało się dodać oferty',
   ADD_EXCHANGE_SUCCESS = 'Oferta dodana pomyślnie',
+  DELETE_EXCHANGE_ERROR = 'Nie udało się usunąć oferty',
+  DELETE_EXCHANGE_SUCCESS = 'Oferta usunięta pomyślnie',
   CHANGE_EXCHANGE_ERROR = 'Nie udało się zmodyfikować oferty',
   CHANGE_EXCHANGE_SUCCESS = 'Oferta zmodyfikowana pomyślnie',
   FILE_ADD_ERROR = 'Nie udało się dodać jednego ze zdjęć',

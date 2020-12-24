@@ -37,7 +37,7 @@ export class FirebaseService {
     private firestore: AngularFirestore,
     private firebaseAuthentication: AngularFireAuth,
     private fireStorage: AngularFireStorage
-  ) {}
+  ) { }
 
   // LOGO METHODS SECTION
   public saveProfileLogo(file: Blob, id: number) {
@@ -155,11 +155,15 @@ export class FirebaseService {
     );
   }
 
-  public addExchange(exchange: IExchangeFirebaseCollection) {
+  public addExchange(exchange: IExchangeFirebaseCollection, owner?: IUserFirebaseCollection) {
     const id = Number(`${new Date().getTime()}${Math.floor(1000 + Math.random() * 9000)}`);
-    const exchangeData = { ...exchange };
+    const exchangeData: IExchangeFirebaseCollection = JSON.parse(JSON.stringify(exchange));
 
+    exchangeData.ownerOfferData.userName = owner?.userName;
+    exchangeData.ownerOfferData.phone = owner?.phone;
+    exchangeData.ownerOfferData.email = owner?.email;
     exchangeData.id = id;
+
     return from(
       this.firestore
         .collection<IExchangeFirebaseCollection>('Exchanges')
@@ -186,6 +190,10 @@ export class FirebaseService {
       .update(exchangeData);
   }
 
+  public deleteExchangeById(exchangeId: number) {
+    return from(this.firestore.collection<IExchangeFirebaseCollection>('Exchanges').doc(exchangeId.toString()).delete());
+  }
+
   // PRODUCT METHODS SECTION
   public getSearchedProducts(query: string): Observable<IProductFirebaseCollection[]> {
     const categoryQuery = this.firestore
@@ -203,23 +211,23 @@ export class FirebaseService {
 
     return !!query?.length
       ? combineLatest([categoryQuery, stateQuery, platformQuery, nameQuery]).pipe(
-          map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
-            const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
-            const filteredData = [];
+        map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
+          const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
+          const filteredData = [];
 
-            rawData.forEach((data) => {
-              if (!!data.docs?.length) {
-                data.docs.forEach((doc) => {
-                  filteredData.push(doc.data());
-                });
-              }
-            });
+          rawData.forEach((data) => {
+            if (!!data.docs?.length) {
+              data.docs.forEach((doc) => {
+                filteredData.push(doc.data());
+              });
+            }
+          });
 
-            return filteredData.filter(
-              (value, index, array) => array.findIndex((data) => data.id === value.id) === index
-            );
-          })
-        )
+          return filteredData.filter(
+            (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+          );
+        })
+      )
       : this.productCollection$;
   }
 
@@ -310,6 +318,7 @@ export class FirebaseService {
       email,
       firstName: null,
       id,
+      phone: null,
       interests: null,
       logo: null,
       platform: null,

@@ -13,6 +13,7 @@ import {
   GET_PRODUCT_SUCCESS,
   SET_PRODUCT_PHOTO_SUCCESS,
   GET_EXCHANGE_SUCCESS,
+  DELETE_EXCHANGE_SUCCESS,
 } from '../actions/product.action';
 import { LOGOUT_USER_SUCCESS } from '../actions/user.action';
 import { IProductState } from '../interfaces/store.interface';
@@ -50,6 +51,10 @@ export const productReducer = createReducer(
   on(DELETE_USER_PRODUCT_SUCCESS, (state, action) => ({
     ...state,
     products: state.products.filter((product) => product.id !== action.payload),
+  })),
+  on(DELETE_EXCHANGE_SUCCESS, (state, action) => ({
+    ...state,
+    exchanges: state.exchanges.filter((exchange) => exchange.id !== action.payload),
   })),
   on(ADD_PRODUCT_SUCCESS, (state, action) => ({
     ...state,

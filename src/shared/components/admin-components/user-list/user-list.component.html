@@ -1,0 +1,32 @@
+<ion-content class="ion-padding product-list-component">
+  <ion-list>
+    <div class="product-container ion-margin-bottom"
+      *ngFor="let user of usersList$ | async; let userNumber = index">
+      <ion-item>
+        <ion-label>Numer:</ion-label>
+        <span>{{ userNumber + 1 }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Email:</ion-label>
+        <span>{{ user.email }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Nazwa:</ion-label>
+        <span>{{ user.userName }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Imie:</ion-label>
+        <span>{{ user.name }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-label>Nazwisko:</ion-label>
+        <span>{{ user.surname }}</span>
+      </ion-item>
+      <ion-item>
+        <ion-button class="action-button" color="danger" (click)="deleteUser(product.id)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </ion-list>
+</ion-content>

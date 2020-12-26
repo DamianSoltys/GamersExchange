@@ -2,13 +2,15 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { map, takeUntil, filter } from 'rxjs/operators';
+import { map, takeUntil, filter, take } from 'rxjs/operators';
 import {
+  AccountTypeEnum,
   InterestsEnum,
   IUserFirebaseCollection,
   PlatformEnum,
 } from 'src/shared/firebase/interfaces/firestore.interface';
 import {
+  GET_ALL_USERS,
   GET_USER,
   GET_USER_LOGO,
   GET_USER_LOGO_SUCCESS,
@@ -21,11 +23,12 @@ import { PhotoService } from 'src/shared/services/photo.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { Actions, ofType } from '@ngrx/effects';
 import { MainService } from 'src/shared/services/main.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profilePage.component.html',
-  styleUrls: ['./profilePage.component.css'],
+  styleUrls: ['./profilePage.component.scss'],
 })
 export class ProfilePageComponent implements OnDestroy {
   public userData$ = this.store.select('userState').pipe(
@@ -58,11 +61,16 @@ export class ProfilePageComponent implements OnDestroy {
   private userData: IUserFirebaseCollection;
   private loggedUser: IUserFirebaseCollection;
   private destroy$ = new Subject();
+  private isAdmin$ =  this.store.select('userState').pipe(
+    filter((userState) => userState?.loggedUser !== null),
+    map((userState) => userState?.loggedUser.type === AccountTypeEnum.ADMIN)
+  );
 
   constructor(
     private store: Store<IInitialState>,
     private fb: FormBuilder,
     private actions$: Actions,
+    private router:Router,
     private mainService: MainService,
     private photoService: PhotoService
   ) {
@@ -99,6 +107,10 @@ export class ProfilePageComponent implements OnDestroy {
     if (!this.capturedPhoto) {
       this.mainService.dispatch(GET_USER_LOGO({ payload: this.loggedUser.id }));
     }
+  }
+
+  public goToUsersList() {
+    this.router.navigate(['profile/users']);
   }
 
   public submitModifyData(user: IUserFirebaseCollection) {

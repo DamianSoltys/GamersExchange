@@ -12,6 +12,9 @@ import {
   CREATE_USER,
   CREATE_USER_ERROR,
   CREATE_USER_SUCCESS,
+  GET_ALL_USERS,
+  GET_ALL_USERS_ERROR,
+  GET_ALL_USERS_SUCCESS,
   GET_USER,
   GET_USER_ERROR,
   GET_USER_LOGO,
@@ -171,6 +174,22 @@ export class UserEffects {
       )
     )
   );
+
+  getUsersData$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(GET_ALL_USERS),
+    switchMap(() => this.fireService.getAllUsers()),
+    switchMap((data: IUserFirebaseCollection[]) =>
+      this.errorService.handleResponse(GET_ALL_USERS_SUCCESS({ payload: data }))
+    ),
+    catchError((error, caught) =>
+      this.errorService.handleError(GET_ALL_USERS_ERROR({ payload: error }), caught, true, {
+        type: ToastTypeEnum.ERROR,
+        message: ToastMessageEnum.GET_DATA_ERROR,
+      })
+    )
+  )
+);
 
   setUserLogo$ = createEffect(() =>
     this.actions$.pipe(

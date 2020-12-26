@@ -141,4 +141,10 @@
   <ion-button class="ion-margin-vertical" expand="block" (click)="toggleEdit.next(!toggleEdit.getValue())">
     <ion-icon name="toggle-sharp" class="ion-margin-end"></ion-icon>Zmień tryb edycji
   </ion-button>
+
+  <ion-fab vertical="top" *ngIf="isAdmin$ | async" horizontal="end" slot="fixed">
+    <ion-fab-button color="success" (click)="goToUsersList()">
+      <ion-icon name="accessibility" class="fab-icon"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

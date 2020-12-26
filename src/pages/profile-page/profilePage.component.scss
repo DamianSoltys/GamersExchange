@@ -1,0 +1,17 @@
+.helper {
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fab-vertical-top {
+  top: -20px;
+  right: -20px;
+
+  .fab-icon {
+    position: relative;
+    top: 8px;
+    right: 8px;
+  }
+}

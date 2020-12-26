@@ -18,6 +18,9 @@
           <span>{{ product.state }}</span>
         </ion-item>
         <ion-item>
+          <ion-button class="action-button" color="danger" *ngIf="isAdmin" (click)="deleteProduct(product.userId,product.id)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
           <ion-button class="action-button" (click)="goToDetails(product.id)"
             ><ion-icon name="arrow-redo-circle"></ion-icon
           ></ion-button>

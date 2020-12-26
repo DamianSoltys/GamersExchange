@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProductSearchListComponent } from 'src/shared/components/product-search-list/product-search-list.component';
+import { ProductSearchListComponent } from 'src/shared/components/product-components/product-search-list/product-search-list.component';
 import { SearchPageComponent } from './searchPage.component';
 
 const routes: Routes = [

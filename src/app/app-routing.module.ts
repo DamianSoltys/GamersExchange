@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from 'src/shared/components/login/login.component';
-import { RegisterComponent } from 'src/shared/components/register/register.component';
+import { LoginComponent } from 'src/shared/components/main-components/login/login.component';
+import { RegisterComponent } from 'src/shared/components/main-components/register/register.component';
 import { AuthGuardService, GuestGuardService } from 'src/shared/guards/authGuard.service';
 
 const routes: Routes = [

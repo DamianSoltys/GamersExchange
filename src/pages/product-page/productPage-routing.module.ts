@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ExchangeListComponent } from 'src/shared/components/exchange-list/exchange-list.component';
-import { ProductFormComponent } from 'src/shared/components/product-form/product-form.component';
-import { ProductListComponent } from 'src/shared/components/product-list/product-list.component';
-import { ProductComponent } from 'src/shared/components/product/product.component';
-import { ExchangeFormComponent } from 'src/shared/components/exchange-form/exchange-form.component';
+import { ExchangeListComponent } from 'src/shared/components/exchange-components/exchange-list/exchange-list.component';
+import { ProductFormComponent } from 'src/shared/components/product-components/product-form/product-form.component';
+import { ProductListComponent } from 'src/shared/components/product-components/product-list/product-list.component';
+import { ProductComponent } from 'src/shared/components/product-components/product/product.component';
+import { ExchangeFormComponent } from 'src/shared/components/exchange-components/exchange-form/exchange-form.component';
 
 const routes: Routes = [
   {

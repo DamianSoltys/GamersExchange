@@ -312,6 +312,25 @@ export class FirebaseService {
       );
   }
 
+  public getAllUsers() {
+    return this.firestore
+      .collection<IUserFirebaseCollection>('Users')
+      .get()
+      .pipe(
+        map((snapshot) => {
+          if (snapshot.empty) {
+            return [];
+          } else {
+            const mappedData: IUserFirebaseCollection[] = [];
+
+            snapshot.docs.forEach((user) => mappedData.push(user.data()));
+
+            return mappedData;
+          }
+        })
+      );
+  }
+
   public createUser(email:string,uid:string) {
     const userData: IUserFirebaseCollection = {
       address: null,

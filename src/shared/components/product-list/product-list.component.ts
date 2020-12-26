@@ -15,7 +15,7 @@ import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 })
 export class ProductListComponent {
   public productList$ = this.store.select('productState').pipe(map((productState) => productState.products));
-  public userId: number;
+  public userId: string;
 
   private userId$ = this.store.select('userState').pipe(
     filter((userState) => userState?.loggedUser?.id !== null),

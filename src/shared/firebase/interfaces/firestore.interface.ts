@@ -3,12 +3,13 @@ export interface IUserFirebaseCollection {
   email: string;
   phone: string;
   firstName: string;
-  id: number;
+  id: string;
   interests: string[];
   logo: Blob;
   platform: PlatformEnum[];
   surname: string;
   userName: string;
+  type: AccountTypeEnum;
 }
 
 export interface IProductFirebaseCollection {
@@ -22,14 +23,14 @@ export interface IProductFirebaseCollection {
   possibleExchangeItem: string;
   productImages: Blob[];
   state: StateEnum;
-  userId: number;
+  userId: string;
 }
 
 export interface IExchangeFirebaseCollection {
   buyerOfferData: IExchangeOfferData;
   ownerOfferData: IExchangeOfferData;
-  ownerId: number;
-  buyerId: number;
+  ownerId: string;
+  buyerId: string;
   id: number;
   status: StatusEnum;
 }
@@ -38,7 +39,7 @@ export interface IExchangeOfferData {
   productId: number;
   productName: string;
   status: StatusEnum;
-  userId: number;
+  userId: string;
   userName: string;
   email: string;
   phone: string;
@@ -52,6 +53,11 @@ export interface IUserAddress {
   houseNo: string;
   postalCode: string;
   street: string;
+}
+
+export enum AccountTypeEnum {
+  ADMIN = 'ADMIN',
+  USER = 'USER'
 }
 
 export enum StatusEnum {

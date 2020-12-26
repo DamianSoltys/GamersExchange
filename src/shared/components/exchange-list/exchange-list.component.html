@@ -15,6 +15,10 @@
         <span>{{ exchange.status }}</span>
       </ion-item>
       <ion-item>
+        <ion-label>Przedmiot oferującego:</ion-label>
+        <span>{{ exchange?.buyerOfferData?.productName }}</span>
+      </ion-item>
+      <ion-item>
         <ion-label>Opis oferującego:</ion-label>
         <span>{{ exchange?.buyerOfferData?.description }}</span>
       </ion-item>
@@ -30,7 +34,7 @@
         <ion-button class="action-button" color="danger" (click)="deleteProduct(exchange.id)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
-        <ion-button class="action-button" color="success" (click)="modifyProduct(exchange)">
+        <ion-button class="action-button" color="success" (click)="modifyProduct(exchange)" *ngIf="canShowModifyButton(exchange.status)">
           <ion-icon name="chatbubbles"></ion-icon>
         </ion-button>
         <ion-button class="action-button" (click)="goToDetails(exchange?.ownerOfferData?.productId)">

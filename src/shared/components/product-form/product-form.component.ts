@@ -45,7 +45,7 @@ export class ProductFormComponent {
     filter((state) => state.formImages?.length > 0),
     map((state) => state.formImages)
   );
-  public userId: number;
+  public userId: string;
   public capturedPhotos: Blob[];
   public trustedCapturedPhotos: SafeUrl[] = [];
   public platformOptions = Object.values(PlatformEnum);

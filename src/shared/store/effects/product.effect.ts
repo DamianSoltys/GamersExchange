@@ -107,7 +107,7 @@ export class ProductEffects {
     this.actions$.pipe(
       ofType(DELETE_USER_PRODUCT),
       switchMap((payload) =>
-        combineLatest([this.fireService.deleteProductById(payload.productId, payload.userId), of(payload)])
+        combineLatest([this.fireService.deleteProductById(payload.productId), of(payload)])
       ),
       switchMap(([res, payload]) =>
         combineLatest([this.fireService.removeProductImages(payload.productId, payload.userId), of(payload)])
@@ -244,10 +244,13 @@ export class ProductEffects {
         });
       }),
       catchError((error, caught) =>
-        this.errorService.handleError(ADD_EXCHANGE_ERROR(error), caught, true, {
-          type: ToastTypeEnum.ERROR,
-          message: ToastMessageEnum.ADD_EXCHANGE_ERROR,
-        })
+        {
+          console.log(error)
+          return this.errorService.handleError(ADD_EXCHANGE_ERROR(error), caught, true, {
+            type: ToastTypeEnum.ERROR,
+            message: ToastMessageEnum.ADD_EXCHANGE_ERROR,
+          })
+        }
       )
     )
   );

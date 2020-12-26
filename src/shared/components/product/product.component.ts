@@ -28,7 +28,7 @@ export class ProductComponent {
     map((productState) => productState.lastProduct)
   );
   public trustedCapturedPhotos: SafeUrl[] = [];
-  public userId: number;
+  public userId: string;
   public productId: number;
   public productForm = this.fb.group({
     name: [null],

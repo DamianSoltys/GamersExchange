@@ -19,22 +19,22 @@ const routes: Routes = [
   {
     path: 'home',
     canActivate: [AuthGuardService],
-    loadChildren: () => import('../pages/homePage/homePage-module').then((m) => m.HomePageModule),
+    loadChildren: () => import('../pages/home-page/homePage-module').then((m) => m.HomePageModule),
   },
   {
     path: 'profile',
     canActivate: [AuthGuardService],
-    loadChildren: () => import('../pages/profilePage/profilePage-module').then((m) => m.ProfilePageModule),
+    loadChildren: () => import('../pages/profile-page/profilePage-module').then((m) => m.ProfilePageModule),
   },
   {
     path: 'product',
     canActivate: [AuthGuardService],
-    loadChildren: () => import('../pages/productPage/productPage-module').then((m) => m.ProductPageModule),
+    loadChildren: () => import('../pages/product-page/productPage-module').then((m) => m.ProductPageModule),
   },
   {
     path: 'search',
     canActivate: [AuthGuardService],
-    loadChildren: () => import('../pages/searchPage/searchPage-module').then((m) => m.SearchPageModule),
+    loadChildren: () => import('../pages/search-page/searchPage-module').then((m) => m.SearchPageModule),
   },
 ];
 @NgModule({

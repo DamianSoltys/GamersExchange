@@ -5,6 +5,7 @@ import firebase from 'firebase/app';
 import { Store } from '@ngrx/store';
 import { from, Observable, forkJoin, of, combineLatest } from 'rxjs';
 import {
+  AccountTypeEnum,
   IExchangeFirebaseCollection,
   IProductFirebaseCollection,
   IUserFirebaseCollection,
@@ -40,13 +41,13 @@ export class FirebaseService {
   ) { }
 
   // LOGO METHODS SECTION
-  public saveProfileLogo(file: Blob, id: number) {
+  public saveProfileLogo(file: Blob, id: string) {
     const fileRef = this.fireStorage.ref(`images/user/${id}/profile/logo`);
 
     return this.fireStorage.upload(`images/user/${id}/profile/logo`, file).snapshotChanges();
   }
 
-  public getProfileLogo(id: number) {
+  public getProfileLogo(id: string) {
     const fileRef = this.fireStorage.ref(`images/user/${id}/profile/logo`);
 
     return fileRef.getDownloadURL().pipe(
@@ -55,7 +56,7 @@ export class FirebaseService {
     );
   }
 
-  public async getProductImages(productId: number, userId: number) {
+  public async getProductImages(productId: number, userId: string) {
     const fileRef = this.fireStorage.ref(`images/user/${userId}/product/${productId}`);
 
     return fileRef.listAll().pipe(
@@ -76,7 +77,7 @@ export class FirebaseService {
     );
   }
 
-  public saveProductImages(files: Blob[], userId: number, productId: number) {
+  public saveProductImages(files: Blob[], userId: string, productId: number) {
     const fileObs: Observable<any>[] = [];
 
     files.forEach((file, index) => {
@@ -99,7 +100,7 @@ export class FirebaseService {
     return forkJoin(fileObs);
   }
 
-  public removeProductImages(productId: number, userId: number) {
+  public removeProductImages(productId: number, userId: string) {
     const fileRef = this.fireStorage.ref(`images/user/${userId}/product/${productId}`);
 
     return fileRef.listAll().pipe(
@@ -129,7 +130,7 @@ export class FirebaseService {
   }
 
   // EXCHANGE METHODS SECTION
-  public getAllUserExchangesById(id: number) {
+  public getAllUserExchangesById(id: string) {
     const ownerQuery = this.firestore
       .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('ownerId', '==', id))
       .get();
@@ -159,9 +160,9 @@ export class FirebaseService {
     const id = Number(`${new Date().getTime()}${Math.floor(1000 + Math.random() * 9000)}`);
     const exchangeData: IExchangeFirebaseCollection = JSON.parse(JSON.stringify(exchange));
 
-    exchangeData.ownerOfferData.userName = owner?.userName;
-    exchangeData.ownerOfferData.phone = owner?.phone;
-    exchangeData.ownerOfferData.email = owner?.email;
+    exchangeData.ownerOfferData.userName = owner?.userName || null;
+    exchangeData.ownerOfferData.phone = owner?.phone || null;
+    exchangeData.ownerOfferData.email = owner?.email || null;
     exchangeData.id = id;
 
     return from(
@@ -231,9 +232,9 @@ export class FirebaseService {
       : this.productCollection$;
   }
 
-  public getAllUserProductsById(id: number) {
+  public getAllUserProductsById(id: string) {
     return this.firestore
-      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', Number(id)))
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', id))
       .get()
       .pipe(
         map((snapshot) => {
@@ -284,16 +285,16 @@ export class FirebaseService {
   //     .update(product);
   // }
 
-  public deleteProductById(productId: number, userId: number) {
+  public deleteProductById(productId: number) {
     return from(this.firestore.collection<IProductFirebaseCollection>('Products').doc(productId.toString()).delete());
   }
 
   // USER METHODS SECTION
-  public modifyUserData(userData: IUserFirebaseCollection, userId: number) {
-    return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId.toString()).update(userData);
+  public modifyUserData(userData: IUserFirebaseCollection, userId: string) {
+    return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).update(userData);
   }
 
-  public getUserById(id: number) {
+  public getUserById(id: string) {
     return this.firestore
       .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('id', '==', Number(id)))
       .get()
@@ -311,22 +312,22 @@ export class FirebaseService {
       );
   }
 
-  public createUser({ email }: IRegisterUser) {
-    const id = Number(`${new Date().getTime()}${Math.floor(1000 + Math.random() * 9000)}`);
-    const user: IUserFirebaseCollection = {
+  public createUser(email:string,uid:string) {
+    const userData: IUserFirebaseCollection = {
       address: null,
       email,
       firstName: null,
-      id,
+      id:uid,
       phone: null,
       interests: null,
       logo: null,
       platform: null,
       surname: null,
       userName: null,
+      type: AccountTypeEnum.USER,
     };
 
-    return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(id.toString()).set(user));
+    return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(uid).set(userData));
   }
 
   public loginUserByCridentials({ email, password }: ILoginUser) {

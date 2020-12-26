@@ -51,7 +51,9 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(LOGIN_USER),
       switchMap(({ payload }) => this.fireService.loginUserByCridentials(payload)),
-      switchMap(({ user: { email } }) => this.fireService.getUserByEmail(email)),
+      switchMap(({ user: { email } }) => {
+        return this.fireService.getUserByEmail(email)
+      }),
       switchMap((user) => {
         this.navigation.navigateRoot(['/home']);
 
@@ -72,7 +74,7 @@ export class UserEffects {
   createUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CREATE_USER),
-      switchMap(({ payload }) => this.fireService.createUser(payload)),
+      switchMap(({ email,uid }) => this.fireService.createUser(email,uid)),
       switchMap(() =>
         this.errorService.handleResponse(CREATE_USER_SUCCESS(), true, {
           type: ToastTypeEnum.SUCCESS,
@@ -91,9 +93,9 @@ export class UserEffects {
   registerUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(REGISTER_USER),
-      switchMap(({ payload }) => combineLatest([this.fireService.registerUserByCridentials(payload), of(payload)])),
-      switchMap(([res, payload]) => {
-        this.mainService.dispatch(CREATE_USER({ payload }));
+      switchMap(({ payload }) => this.fireService.registerUserByCridentials(payload)),
+      switchMap(({user:{email,uid}}) => {
+        this.mainService.dispatch(CREATE_USER({ email,uid }));
 
         return this.errorService.handleResponse(REGISTER_USER_SUCCESS());
       }),
@@ -188,7 +190,7 @@ export class UserEffects {
   getUserLogo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GET_USER_LOGO),
-      switchMap(({ payload }) => this.fireService.getProfileLogo(Number(payload))),
+      switchMap(({ payload }) => this.fireService.getProfileLogo(payload)),
       switchMap((data: Blob) => this.errorService.handleResponse(GET_USER_LOGO_SUCCESS({ payload: data }))),
       catchError((error, caught) => this.errorService.handleError(GET_USER_LOGO_ERROR({ payload: error }), caught))
     )

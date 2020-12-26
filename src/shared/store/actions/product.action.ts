@@ -4,7 +4,7 @@ import {
   IProductFirebaseCollection,
 } from 'src/shared/firebase/interfaces/firestore.interface';
 
-export const GET_ALL_USER_PRODUCTS = createAction('[PRODUCT] Get All User Products', props<{ payload: number }>());
+export const GET_ALL_USER_PRODUCTS = createAction('[PRODUCT] Get All User Products', props<{ payload: string }>());
 export const GET_ALL_USER_PRODUCTS_SUCCESS = createAction(
   '[PRODUCT] Get All User Products Success',
   props<{ payload: IProductFirebaseCollection[] }>()
@@ -63,7 +63,7 @@ export const ADD_PRODUCT_ERROR = createAction('[PRODUCT] Add Product Error', pro
 
 export const DELETE_USER_PRODUCT = createAction(
   '[PRODUCT] Delete User Product',
-  props<{ productId: number; userId: number }>()
+  props<{ productId: number; userId: string }>()
 );
 export const DELETE_USER_PRODUCT_SUCCESS = createAction(
   '[PRODUCT] Delete User Product Success',
@@ -87,7 +87,7 @@ export const SET_PRODUCT_PHOTO_ERROR = createAction('[USER] Set Product Photo Er
 
 export const GET_PRODUCT_PHOTOS = createAction(
   '[USER] Get Product Photo',
-  props<{ userId: number; productId: number }>()
+  props<{ userId: string; productId: number }>()
 );
 export const GET_PRODUCT_PHOTOS_SUCCESS = createAction(
   '[USER] Get Product Photo Success',
@@ -95,7 +95,7 @@ export const GET_PRODUCT_PHOTOS_SUCCESS = createAction(
 );
 export const GET_PRODUCT_PHOTOS_ERROR = createAction('[USER] Get Product Photo Error', props<{ payload: Error }>());
 
-export const GET_ALL_USER_EXCHANGES = createAction('[PRODUCT] Get All User Exchanges', props<{ payload: number }>());
+export const GET_ALL_USER_EXCHANGES = createAction('[PRODUCT] Get All User Exchanges', props<{ payload: string }>());
 export const GET_ALL_USER_EXCHANGES_SUCCESS = createAction(
   '[PRODUCT] Get All User Exchanges Success',
   props<{ payload: IExchangeFirebaseCollection[] }>()

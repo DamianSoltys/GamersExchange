@@ -18,6 +18,7 @@ import {
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 import { Actions, ofType } from '@ngrx/effects';
 
+// TODO make exchange details component
 @Component({
   selector: 'app-exchange-list',
   templateUrl: './exchange-list.component.html',
@@ -25,7 +26,8 @@ import { Actions, ofType } from '@ngrx/effects';
 })
 export class ExchangeListComponent {
   public exchangesList$ = this.store.select('productState').pipe(map((productState) => productState.exchanges));
-  public userId: number;
+  public userId: string;
+  public ExchangeStatus = StatusEnum;
 
   private userId$ = this.store.select('userState').pipe(
     filter((userState) => userState?.loggedUser?.id !== null),
@@ -59,6 +61,10 @@ export class ExchangeListComponent {
 
   public modifyProduct(exchange: IExchangeFirebaseCollection) {
     this.presentAlertChangeConfirm(exchange);
+  }
+
+  public canShowModifyButton(status:StatusEnum) {
+    return status !== StatusEnum.SUCCESS && status !== StatusEnum.CANCELED;
   }
 
   // TODO make this into service
@@ -131,7 +137,7 @@ export class ExchangeListComponent {
     await alert.present();
   }
 
-  private isOwner(ownerId: number) {
+  private isOwner(ownerId: string) {
     return ownerId === this.userId;
   }
 
@@ -140,28 +146,13 @@ export class ExchangeListComponent {
   }
 
   private getStatusToChange(exchange: IExchangeFirebaseCollection) {
-    const ownerStatus = exchange.ownerOfferData.status;
-    const buyerStatus = exchange.buyerOfferData.status;
+    const status = exchange.status;
 
-    if (
-      (ownerStatus === StatusEnum.PENDING || buyerStatus === StatusEnum.PENDING) &&
-      this.getStatus(exchange) === StatusEnum.PENDING
-    ) {
-      return StatusEnum.ACCEPTED;
-    }
-
-    if (
-      (ownerStatus === StatusEnum.ACCEPTED || buyerStatus === StatusEnum.ACCEPTED) &&
-      this.getStatus(exchange) === StatusEnum.ACCEPTED
-    ) {
-      return StatusEnum.SUCCESS;
-    }
+    return status === StatusEnum.PENDING?StatusEnum.ACCEPTED:StatusEnum.SUCCESS;
   }
 
   private isDisabled(exchange: IExchangeFirebaseCollection) {
-    const { ownerOfferData: { status: ownerStatus }, buyerOfferData: { status: buyerStatus } } = exchange;
-
-    return ownerStatus !== buyerStatus;
+    return this.getStatus(exchange) === this.getStatusToChange(exchange);
   }
 
   ionViewDidEnter() {

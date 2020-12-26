@@ -20,7 +20,7 @@ export class ProductSearchListComponent {
   @ViewChild('searchQuery', { static: true }) searchQuery: IonSearchbar;
 
   public productList$ = this.store.select('productState').pipe(map((productState) => productState.searchProducts));
-  public userId: number;
+  public userId: string;
 
   private userId$ = this.store.select('userState').pipe(
     filter((userState) => userState?.loggedUser?.id !== null),

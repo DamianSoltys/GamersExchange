@@ -1,7 +1,6 @@
 <ion-content class="ion-padding product-list-component">
   <ion-list>
-    <div class="product-container ion-margin-bottom"
-      *ngFor="let user of usersList$ | async; let userNumber = index">
+    <div class="product-container ion-margin-bottom" *ngFor="let user of usersList$ | async; let userNumber = index">
       <ion-item>
         <ion-label>Numer:</ion-label>
         <span>{{ userNumber + 1 }}</span>
@@ -16,14 +15,14 @@
       </ion-item>
       <ion-item>
         <ion-label>Imie:</ion-label>
-        <span>{{ user.name }}</span>
+        <span>{{ user.firstName }}</span>
       </ion-item>
       <ion-item>
         <ion-label>Nazwisko:</ion-label>
         <span>{{ user.surname }}</span>
       </ion-item>
       <ion-item>
-        <ion-button class="action-button" color="danger" (click)="deleteUser(product.id)">
+        <ion-button class="action-button" color="danger" (click)="deleteUser(user.id)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-item>

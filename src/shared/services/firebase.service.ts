@@ -38,7 +38,7 @@ export class FirebaseService {
     private firestore: AngularFirestore,
     private firebaseAuthentication: AngularFireAuth,
     private fireStorage: AngularFireStorage
-  ) { }
+  ) {}
 
   // LOGO METHODS SECTION
   public saveProfileLogo(file: Blob, id: string) {
@@ -192,7 +192,9 @@ export class FirebaseService {
   }
 
   public deleteExchangeById(exchangeId: number) {
-    return from(this.firestore.collection<IExchangeFirebaseCollection>('Exchanges').doc(exchangeId.toString()).delete());
+    return from(
+      this.firestore.collection<IExchangeFirebaseCollection>('Exchanges').doc(exchangeId.toString()).delete()
+    );
   }
 
   // PRODUCT METHODS SECTION
@@ -212,23 +214,23 @@ export class FirebaseService {
 
     return !!query?.length
       ? combineLatest([categoryQuery, stateQuery, platformQuery, nameQuery]).pipe(
-        map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
-          const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
-          const filteredData = [];
+          map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
+            const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
+            const filteredData = [];
 
-          rawData.forEach((data) => {
-            if (!!data.docs?.length) {
-              data.docs.forEach((doc) => {
-                filteredData.push(doc.data());
-              });
-            }
-          });
+            rawData.forEach((data) => {
+              if (!!data.docs?.length) {
+                data.docs.forEach((doc) => {
+                  filteredData.push(doc.data());
+                });
+              }
+            });
 
-          return filteredData.filter(
-            (value, index, array) => array.findIndex((data) => data.id === value.id) === index
-          );
-        })
-      )
+            return filteredData.filter(
+              (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+            );
+          })
+        )
       : this.productCollection$;
   }
 
@@ -294,6 +296,10 @@ export class FirebaseService {
     return this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).update(userData);
   }
 
+  public deleteUserById(userId: string) {
+    return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).delete());
+  }
+
   public getUserById(id: string) {
     return this.firestore
       .collection<IUserFirebaseCollection>('Users', (reference) => reference.where('id', '==', Number(id)))
@@ -331,12 +337,12 @@ export class FirebaseService {
       );
   }
 
-  public createUser(email:string,uid:string) {
+  public createUser(email: string, uid: string) {
     const userData: IUserFirebaseCollection = {
       address: null,
       email,
       firstName: null,
-      id:uid,
+      id: uid,
       phone: null,
       interests: null,
       logo: null,

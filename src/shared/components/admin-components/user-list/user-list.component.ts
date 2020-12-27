@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { MainService } from 'src/shared/services/main.service';
 import { DELETE_USER_PRODUCT, GET_ALL_USER_PRODUCTS } from 'src/shared/store/actions/product.action';
-import { GET_ALL_USERS } from 'src/shared/store/actions/user.action';
+import { DELETE_USER, GET_ALL_USERS } from 'src/shared/store/actions/user.action';
 import { IInitialState } from 'src/shared/store/interfaces/store.interface';
 
 @Component({
@@ -35,12 +35,12 @@ export class UserListComponent {
     });
   }
 
-  public deleteUser(id: number) {
+  public deleteUser(id: string) {
     this.presentAlertConfirm(id);
   }
 
   // TODO make this into service
-  private async presentAlertConfirm(id: number) {
+  private async presentAlertConfirm(id: string) {
     const alert = await this.alertController.create({
       header: 'Uwaga!',
       message: '<strong>Czy na pewno chcesz usunąć użytkownika?</strong>',
@@ -49,7 +49,7 @@ export class UserListComponent {
         {
           text: 'Potwierdź',
           handler: () => {
-            // this.mainService.dispatch(DELETE_USER_PRODUCT({ productId: id, userId: this.userId }));
+            this.mainService.dispatch(DELETE_USER({ payload: id }));
           },
         },
       ],

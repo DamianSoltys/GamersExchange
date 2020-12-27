@@ -25,7 +25,11 @@ export const REGISTER_USER = createAction('[USER] Register User', props<{ payloa
 export const REGISTER_USER_SUCCESS = createAction('[USER] Register User Success');
 export const REGISTER_USER_ERROR = createAction('[USER] Register User Error', props<{ payload: Error }>());
 
-export const CREATE_USER = createAction('[USER] Create User', props<{ email:string,uid:string }>());
+export const DELETE_USER = createAction('[USER] Delete User', props<{ payload: string }>());
+export const DELETE_USER_SUCCESS = createAction('[USER] Delete User Success', props<{ payload: string }>());
+export const DELETE_USER_ERROR = createAction('[USER] Delete User Error', props<{ payload: Error }>());
+
+export const CREATE_USER = createAction('[USER] Create User', props<{ email: string; uid: string }>());
 export const CREATE_USER_SUCCESS = createAction('[USER] Create User Success');
 export const CREATE_USER_ERROR = createAction('[USER] Create User Error', props<{ payload: Error }>());
 

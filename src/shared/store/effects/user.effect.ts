@@ -12,6 +12,9 @@ import {
   CREATE_USER,
   CREATE_USER_ERROR,
   CREATE_USER_SUCCESS,
+  DELETE_USER,
+  DELETE_USER_ERROR,
+  DELETE_USER_SUCCESS,
   GET_ALL_USERS,
   GET_ALL_USERS_ERROR,
   GET_ALL_USERS_SUCCESS,
@@ -55,7 +58,7 @@ export class UserEffects {
       ofType(LOGIN_USER),
       switchMap(({ payload }) => this.fireService.loginUserByCridentials(payload)),
       switchMap(({ user: { email } }) => {
-        return this.fireService.getUserByEmail(email)
+        return this.fireService.getUserByEmail(email);
       }),
       switchMap((user) => {
         this.navigation.navigateRoot(['/home']);
@@ -77,7 +80,7 @@ export class UserEffects {
   createUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CREATE_USER),
-      switchMap(({ email,uid }) => this.fireService.createUser(email,uid)),
+      switchMap(({ email, uid }) => this.fireService.createUser(email, uid)),
       switchMap(() =>
         this.errorService.handleResponse(CREATE_USER_SUCCESS(), true, {
           type: ToastTypeEnum.SUCCESS,
@@ -97,8 +100,8 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(REGISTER_USER),
       switchMap(({ payload }) => this.fireService.registerUserByCridentials(payload)),
-      switchMap(({user:{email,uid}}) => {
-        this.mainService.dispatch(CREATE_USER({ email,uid }));
+      switchMap(({ user: { email, uid } }) => {
+        this.mainService.dispatch(CREATE_USER({ email, uid }));
 
         return this.errorService.handleResponse(REGISTER_USER_SUCCESS());
       }),
@@ -175,21 +178,40 @@ export class UserEffects {
     )
   );
 
-  getUsersData$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(GET_ALL_USERS),
-    switchMap(() => this.fireService.getAllUsers()),
-    switchMap((data: IUserFirebaseCollection[]) =>
-      this.errorService.handleResponse(GET_ALL_USERS_SUCCESS({ payload: data }))
-    ),
-    catchError((error, caught) =>
-      this.errorService.handleError(GET_ALL_USERS_ERROR({ payload: error }), caught, true, {
-        type: ToastTypeEnum.ERROR,
-        message: ToastMessageEnum.GET_DATA_ERROR,
-      })
+  deleteUserData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DELETE_USER),
+      switchMap(({ payload }) => combineLatest([this.fireService.deleteUserById(payload), of(payload)])),
+      switchMap(([res, payload]) =>
+        this.errorService.handleResponse(DELETE_USER_SUCCESS({ payload }), true, {
+          type: ToastTypeEnum.SUCCESS,
+          message: ToastMessageEnum.DELETE_USER_SUCCESS,
+        })
+      ),
+      catchError((error, caught) =>
+        this.errorService.handleError(DELETE_USER_ERROR({ payload: error }), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.DELETE_USER_ERROR,
+        })
+      )
     )
-  )
-);
+  );
+
+  getUsersData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(GET_ALL_USERS),
+      switchMap(() => this.fireService.getAllUsers()),
+      switchMap((data: IUserFirebaseCollection[]) =>
+        this.errorService.handleResponse(GET_ALL_USERS_SUCCESS({ payload: data }))
+      ),
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_ALL_USERS_ERROR({ payload: error }), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.GET_DATA_ERROR,
+        })
+      )
+    )
+  );
 
   setUserLogo$ = createEffect(() =>
     this.actions$.pipe(

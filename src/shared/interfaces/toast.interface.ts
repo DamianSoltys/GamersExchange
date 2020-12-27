@@ -21,6 +21,8 @@ export enum ToastMessageEnum {
   LOGOUT_ERROR = 'Wylogowanie się nie powiodło',
   MODIFY_USER_SUCCESS = 'Dane profilu zaktualizowane',
   MODIFY_USER_ERROR = 'Nie udało się zaktualizować danych',
+  DELETE_USER_ERROR = 'Nie udało się usunąć użytkownika',
+  DELETE_USER_SUCCESS = 'Użytkownik usunięty pomyślnie',
   REGISTER_SUCCESS = 'Rejestracja się powiodła',
   REGISTER_ERROR = 'Rejestracja się nie powiodła',
   LOGO_DOWNLOAD_ERROR = 'Nie udało się pobrać zdjęcia profilowego',

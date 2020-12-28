@@ -11,6 +11,7 @@ import {
   LOGOUT_USER_SUCCESS,
   LOGOUT_USER_ERROR,
   GET_USER_LOGO_SUCCESS,
+  DELETE_USER_SUCCESS,
 } from '../actions/user.action';
 import { IUserState } from '../interfaces/store.interface';
 
@@ -37,6 +38,10 @@ export const userReducer = createReducer(
     loggedUser: { ...state.loggedUser, ...action.payload },
     lastUserProfile: { ...state.lastUserProfile, ...action.payload },
     isLoggedIn: true,
+  })),
+  on(DELETE_USER_SUCCESS, (state, action) => ({
+    ...state,
+    products: state.users.filter((user) => user.id !== action.payload),
   })),
   on(LOGIN_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),
   on(REGISTER_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),

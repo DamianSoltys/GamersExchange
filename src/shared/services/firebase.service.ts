@@ -38,7 +38,7 @@ export class FirebaseService {
     private firestore: AngularFirestore,
     private firebaseAuthentication: AngularFireAuth,
     private fireStorage: AngularFireStorage
-  ) { }
+  ) {}
 
   // LOGO METHODS SECTION
   public saveProfileLogo(file: Blob, id: string) {
@@ -122,6 +122,29 @@ export class FirebaseService {
         return !!deleteObs.length ? forkJoin(deleteObs) : of([]);
       })
     );
+  }
+
+  public deleteFolderContents(path) {
+    const ref = firebase.storage().ref(path);
+    ref
+      .listAll()
+      .then((dir) => {
+        dir.items.forEach((fileRef) => {
+          this.deleteFile(ref.fullPath, fileRef.name);
+        });
+        dir.prefixes.forEach((folderRef) => {
+          this.deleteFolderContents(folderRef.fullPath);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  public deleteFile(pathToFile, fileName) {
+    const ref = firebase.storage().ref(pathToFile);
+    const childRef = ref.child(fileName);
+    childRef.delete();
   }
 
   // CATEGORY METHODS SECTION
@@ -214,23 +237,23 @@ export class FirebaseService {
 
     return !!query?.length
       ? combineLatest([categoryQuery, stateQuery, platformQuery, nameQuery]).pipe(
-        map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
-          const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
-          const filteredData = [];
+          map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
+            const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
+            const filteredData = [];
 
-          rawData.forEach((data) => {
-            if (!!data.docs?.length) {
-              data.docs.forEach((doc) => {
-                filteredData.push(doc.data());
-              });
-            }
-          });
+            rawData.forEach((data) => {
+              if (!!data.docs?.length) {
+                data.docs.forEach((doc) => {
+                  filteredData.push(doc.data());
+                });
+              }
+            });
 
-          return filteredData.filter(
-            (value, index, array) => array.findIndex((data) => data.id === value.id) === index
-          );
-        })
-      )
+            return filteredData.filter(
+              (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+            );
+          })
+        )
       : this.productCollection$;
   }
 
@@ -297,24 +320,59 @@ export class FirebaseService {
   }
 
   public deleteUserById(userId: string) {
-    const deleteUser$ = this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).delete();
     const deleteProducts$ = this.firestore
       .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', userId))
       .get()
       .pipe(
         map((snapshot) => {
-          snapshot.docs.forEach((product) => product.ref.delete().catch(() => {
-            this.store.dispatch(
-              SHOW_TOAST({
-                payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.DELETE_PRODUCT_ERROR },
-              })
-            );
-          }));
+          snapshot.docs.forEach((product) =>
+            product.ref.delete().catch(() => {
+              this.store.dispatch(
+                SHOW_TOAST({
+                  payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.DELETE_PRODUCT_ERROR },
+                })
+              );
+            })
+          );
         })
       );
-    const userFolderDelete$ = this.fireStorage.ref(`images/user/${userId}`).delete();
+    const deleteExchangesOwner$ = this.firestore
+      .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('ownerId', '==', userId))
+      .get()
+      .pipe(
+        map((snapshot) => {
+          snapshot.docs.forEach((product) =>
+            product.ref.delete().catch(() => {
+              this.store.dispatch(
+                SHOW_TOAST({
+                  payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.DELETE_PRODUCT_ERROR },
+                })
+              );
+            })
+          );
+        })
+      );
+    const deleteExchangesBuyer$ = this.firestore
+      .collection<IExchangeFirebaseCollection>('Exchanges', (ref) => ref.where('buyerId', '==', userId))
+      .get()
+      .pipe(
+        map((snapshot) => {
+          snapshot.docs.forEach((product) =>
+            product.ref.delete().catch(() => {
+              this.store.dispatch(
+                SHOW_TOAST({
+                  payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.DELETE_PRODUCT_ERROR },
+                })
+              );
+            })
+          );
+        })
+      );
+    const userFolderDelete$ = this.deleteFolderContents(`images/user/${userId}`);
 
-    return forkJoin([deleteUser$, deleteProducts$, userFolderDelete$]);
+    const deleteUser$ = this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).delete();
+
+    return forkJoin([deleteProducts$, deleteExchangesBuyer$, deleteExchangesOwner$, deleteUser$]);
   }
 
   public getUserById(id: string) {

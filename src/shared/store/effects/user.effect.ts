@@ -188,12 +188,13 @@ export class UserEffects {
           message: ToastMessageEnum.DELETE_USER_SUCCESS,
         })
       ),
-      catchError((error, caught) =>
-        this.errorService.handleError(DELETE_USER_ERROR({ payload: error }), caught, true, {
+      catchError((error, caught) => {
+        console.log(error);
+        return this.errorService.handleError(DELETE_USER_ERROR({ payload: error }), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.DELETE_USER_ERROR,
-        })
-      )
+        });
+      })
     )
   );
 

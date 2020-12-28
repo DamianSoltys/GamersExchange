@@ -38,7 +38,7 @@ export class FirebaseService {
     private firestore: AngularFirestore,
     private firebaseAuthentication: AngularFireAuth,
     private fireStorage: AngularFireStorage
-  ) {}
+  ) { }
 
   // LOGO METHODS SECTION
   public saveProfileLogo(file: Blob, id: string) {
@@ -214,23 +214,23 @@ export class FirebaseService {
 
     return !!query?.length
       ? combineLatest([categoryQuery, stateQuery, platformQuery, nameQuery]).pipe(
-          map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
-            const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
-            const filteredData = [];
+        map(([categoryQuery, stateQuery, platformQuery, nameQuery]) => {
+          const rawData = [].concat(categoryQuery, stateQuery, platformQuery, nameQuery);
+          const filteredData = [];
 
-            rawData.forEach((data) => {
-              if (!!data.docs?.length) {
-                data.docs.forEach((doc) => {
-                  filteredData.push(doc.data());
-                });
-              }
-            });
+          rawData.forEach((data) => {
+            if (!!data.docs?.length) {
+              data.docs.forEach((doc) => {
+                filteredData.push(doc.data());
+              });
+            }
+          });
 
-            return filteredData.filter(
-              (value, index, array) => array.findIndex((data) => data.id === value.id) === index
-            );
-          })
-        )
+          return filteredData.filter(
+            (value, index, array) => array.findIndex((data) => data.id === value.id) === index
+          );
+        })
+      )
       : this.productCollection$;
   }
 
@@ -297,7 +297,24 @@ export class FirebaseService {
   }
 
   public deleteUserById(userId: string) {
-    return from(this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).delete());
+    const deleteUser$ = this.firestore.collection<IUserFirebaseCollection>('Users').doc(userId).delete();
+    const deleteProducts$ = this.firestore
+      .collection<IProductFirebaseCollection>('Products', (ref) => ref.where('userId', '==', userId))
+      .get()
+      .pipe(
+        map((snapshot) => {
+          snapshot.docs.forEach((product) => product.ref.delete().catch(() => {
+            this.store.dispatch(
+              SHOW_TOAST({
+                payload: { type: ToastTypeEnum.ERROR, message: ToastMessageEnum.DELETE_PRODUCT_ERROR },
+              })
+            );
+          }));
+        })
+      );
+    const userFolderDelete$ = this.fireStorage.ref(`images/user/${userId}`).delete();
+
+    return forkJoin([deleteUser$, deleteProducts$, userFolderDelete$]);
   }
 
   public getUserById(id: string) {

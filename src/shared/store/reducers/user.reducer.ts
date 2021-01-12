@@ -41,7 +41,7 @@ export const userReducer = createReducer(
   })),
   on(DELETE_USER_SUCCESS, (state, action) => ({
     ...state,
-    products: state.users.filter((user) => user.id !== action.payload),
+    users: state.users.filter((user) => user.id !== action.payload),
   })),
   on(LOGIN_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),
   on(REGISTER_USER_ERROR, (state, action) => ({ ...state, isLoggedIn: false })),

@@ -8,7 +8,7 @@ import { IGeolocationResponse } from '../interfaces/geolocation.interface';
 
 @Injectable({ providedIn: 'root' })
 export class GeolocationService {
-  public currentPosition;
+  public currentPosition = { longitude: null, latitude: null };
 
   constructor(private geolocation: Geolocation, private http: HttpClient) {
     this.getCurrentPosition();

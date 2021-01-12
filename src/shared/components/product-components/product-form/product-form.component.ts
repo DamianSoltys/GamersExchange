@@ -76,7 +76,9 @@ export class ProductFormComponent {
   ) {
     const { longitude, latitude } = this.geolocationService.currentPosition;
 
-    this.mainService.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
+    if (longitude && latitude) {
+      this.mainService.dispatch(GET_ADDRESS_BY_GEOPOINT({ payload: { longitude, latitude } }));
+    }
 
     this.userId$.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       this.userId = id;

@@ -39,7 +39,7 @@ export class ExchangeFormComponent {
   public loggedUser: IUserFirebaseCollection;
   public productData: IProductFirebaseCollection;
   public exchangeForm = this.fb.group({
-    email: [null, Validators.required],
+    email: [null, [Validators.required, Validators.email]],
     phone: [null, Validators.required],
     description: [null],
     productName: [null, Validators.required],
@@ -81,7 +81,7 @@ export class ExchangeFormComponent {
       email: data.email,
       phone: data.phone,
       description: data.description,
-    }
+    };
 
     const ownerOfferData: IExchangeOfferData = {
       productId: this.productData.id,
@@ -92,7 +92,7 @@ export class ExchangeFormComponent {
       email: null,
       phone: null,
       description: this.productData.description,
-    }
+    };
 
     const exchangeData: IExchangeFirebaseCollection = {
       buyerOfferData,
@@ -101,9 +101,9 @@ export class ExchangeFormComponent {
       buyerId: this.loggedUser.id,
       status: StatusEnum.PENDING,
       id: null,
-    }
+    };
 
-    this.mainService.dispatch(ADD_EXCHANGE({ payload: exchangeData }))
+    this.mainService.dispatch(ADD_EXCHANGE({ payload: exchangeData }));
   }
 
   ionViewDidEnter() {

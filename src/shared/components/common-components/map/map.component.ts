@@ -3,7 +3,19 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { latLng, Map, MapOptions, tileLayer, marker, circle, icon, MarkerOptions, DomUtil, DomEvent } from 'leaflet';
+import {
+  latLng,
+  Map,
+  MapOptions,
+  tileLayer,
+  marker,
+  circle,
+  icon,
+  MarkerOptions,
+  DomUtil,
+  DomEvent,
+  LatLng,
+} from 'leaflet';
 import { Subject } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { IProductFirebaseCollection } from 'src/shared/firebase/interfaces/firestore.interface';
@@ -29,7 +41,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public loaded = false;
   public radius: number;
   public biggerRadius: number;
-  public actualPosition = { longitude: 51.246452, latitude: 22.568445 };
+  public actualPosition = this.geolocationService.currentPosition;
 
   private destroy$ = new Subject();
 
@@ -41,7 +53,11 @@ export class MapComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private geolocationService: GeolocationService,
     private modalController: ModalController
-  ) {}
+  ) {
+    const { longitude, latitude } = this.geolocationService.currentPosition;
+    console.log(this.actualPosition);
+    this.options.center = latLng(longitude, latitude);
+  }
 
   ngOnInit() {
     const { longitude, latitude } = this.geolocationService.currentPosition;
@@ -71,7 +87,8 @@ export class MapComponent implements OnInit, OnDestroy {
   public getMarkerData() {
     this.data.forEach((product) => {
       const { position, name, id } = product;
-      const { latitude, longitude } = position as { longitude; latitude };
+      const latitude = (position as { longitude; latitude })?.latitude;
+      const longitude = (position as { longitude; latitude })?.longitude;
 
       if (
         this.geolocationService.checkIfPointInsideCircle(
@@ -102,6 +119,7 @@ export class MapComponent implements OnInit, OnDestroy {
         ) {
           opacity = 0.5;
         }
+
         const markerObject = marker(latLng(latitude, longitude), {
           title: name,
           opacity,
@@ -112,6 +130,7 @@ export class MapComponent implements OnInit, OnDestroy {
             shadowUrl: 'assets/marker-shadow.png',
           }),
         });
+
         markerObject.bindPopup(`<a>Produkt: ${name}</a>`);
         markerObject.on('dblclick', () => {
           this.ngZone.run(() => {
@@ -119,6 +138,8 @@ export class MapComponent implements OnInit, OnDestroy {
           });
         });
         this.options.layers.push(markerObject);
+
+        console.log(markerObject);
       }
     });
   }

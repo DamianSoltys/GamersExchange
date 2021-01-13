@@ -55,7 +55,6 @@ export class MapComponent implements OnInit, OnDestroy {
     private modalController: ModalController
   ) {
     const { longitude, latitude } = this.geolocationService.currentPosition;
-    console.log(this.actualPosition);
     this.options.center = latLng(longitude, latitude);
   }
 
@@ -138,8 +137,6 @@ export class MapComponent implements OnInit, OnDestroy {
           });
         });
         this.options.layers.push(markerObject);
-
-        console.log(markerObject);
       }
     });
   }

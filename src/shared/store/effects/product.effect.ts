@@ -76,10 +76,7 @@ export class ProductEffects {
     this.actions$.pipe(
       ofType(GET_PRODUCT),
       switchMap(({ payload }) => this.fireService.getProductById(payload)),
-      switchMap((product) => {
-        console.log(product);
-        return this.errorService.handleResponse(GET_PRODUCT_SUCCESS({ payload: product }));
-      }),
+      switchMap((product) => this.errorService.handleResponse(GET_PRODUCT_SUCCESS({ payload: product }))),
       catchError((error, caught) =>
         this.errorService.handleError(GET_PRODUCT_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
@@ -106,9 +103,7 @@ export class ProductEffects {
   deleteProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DELETE_USER_PRODUCT),
-      switchMap((payload) =>
-        combineLatest([this.fireService.deleteProductById(payload.productId), of(payload)])
-      ),
+      switchMap((payload) => combineLatest([this.fireService.deleteProductById(payload.productId), of(payload)])),
       switchMap(([res, payload]) =>
         combineLatest([this.fireService.removeProductImages(payload.productId, payload.userId), of(payload)])
       ),
@@ -221,13 +216,12 @@ export class ProductEffects {
           })
         )
       ),
-      catchError((error, caught) => {
-        console.log(error);
-        return this.errorService.handleError(GET_GEOPOINT_BY_ADDRESS_ERROR(error), caught, true, {
+      catchError((error, caught) =>
+        this.errorService.handleError(GET_GEOPOINT_BY_ADDRESS_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
           message: ToastMessageEnum.GET_DATA_ERROR,
-        });
-      })
+        })
+      )
     )
   );
 
@@ -244,13 +238,10 @@ export class ProductEffects {
         });
       }),
       catchError((error, caught) =>
-        {
-          console.log(error)
-          return this.errorService.handleError(ADD_EXCHANGE_ERROR(error), caught, true, {
-            type: ToastTypeEnum.ERROR,
-            message: ToastMessageEnum.ADD_EXCHANGE_ERROR,
-          })
-        }
+        this.errorService.handleError(ADD_EXCHANGE_ERROR(error), caught, true, {
+          type: ToastTypeEnum.ERROR,
+          message: ToastMessageEnum.ADD_EXCHANGE_ERROR,
+        })
       )
     )
   );
@@ -287,10 +278,12 @@ export class ProductEffects {
     this.actions$.pipe(
       ofType(CHANGE_EXCHANGE_STATUS),
       switchMap(({ payload }) => combineLatest([this.fireService.modifyExchangeData(payload), of(payload)])),
-      switchMap(([res, payload]) => this.errorService.handleResponse(CHANGE_EXCHANGE_STATUS_SUCCESS({ payload }), true, {
-        type: ToastTypeEnum.SUCCESS,
-        message: ToastMessageEnum.CHANGE_EXCHANGE_SUCCESS,
-      })),
+      switchMap(([res, payload]) =>
+        this.errorService.handleResponse(CHANGE_EXCHANGE_STATUS_SUCCESS({ payload }), true, {
+          type: ToastTypeEnum.SUCCESS,
+          message: ToastMessageEnum.CHANGE_EXCHANGE_SUCCESS,
+        })
+      ),
       catchError((error, caught) =>
         this.errorService.handleError(CHANGE_EXCHANGE_STATUS_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
@@ -304,10 +297,12 @@ export class ProductEffects {
     this.actions$.pipe(
       ofType(DELETE_EXCHANGE),
       switchMap(({ payload }) => combineLatest([this.fireService.deleteExchangeById(payload), of(payload)])),
-      switchMap(([res, payload]) => this.errorService.handleResponse(DELETE_EXCHANGE_SUCCESS({ payload }), true, {
-        type: ToastTypeEnum.SUCCESS,
-        message: ToastMessageEnum.DELETE_EXCHANGE_SUCCESS,
-      })),
+      switchMap(([res, payload]) =>
+        this.errorService.handleResponse(DELETE_EXCHANGE_SUCCESS({ payload }), true, {
+          type: ToastTypeEnum.SUCCESS,
+          message: ToastMessageEnum.DELETE_EXCHANGE_SUCCESS,
+        })
+      ),
       catchError((error, caught) =>
         this.errorService.handleError(DELETE_EXCHANGE_ERROR(error), caught, true, {
           type: ToastTypeEnum.ERROR,
@@ -324,5 +319,5 @@ export class ProductEffects {
     private geolocationService: GeolocationService,
     private errorService: ErrorService,
     private photoService: PhotoService
-  ) { }
+  ) {}
 }

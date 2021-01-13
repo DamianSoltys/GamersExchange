@@ -16,7 +16,6 @@ export class GeolocationService {
 
   private getCurrentPosition() {
     from(this.geolocation.getCurrentPosition()).subscribe(({ coords: { longitude, latitude } }) => {
-      console.log(longitude, latitude);
       this.currentPosition = { longitude, latitude };
     });
   }

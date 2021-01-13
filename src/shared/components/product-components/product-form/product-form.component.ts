@@ -103,7 +103,6 @@ export class ProductFormComponent {
         takeUntil(this.destroy$)
       )
       .subscribe(({ longitude, latitude }) => {
-        console.log('addwithgeopoint');
         this.addProduct({ longitude, latitude });
       });
 
@@ -113,10 +112,8 @@ export class ProductFormComponent {
         takeUntil(this.destroy$)
       )
       .subscribe((address) => {
-        console.log(address);
         this.productForm.controls.position.setValue(address);
       });
-    console.log('test');
   }
 
   public takePhoto() {
@@ -132,7 +129,6 @@ export class ProductFormComponent {
   }
 
   private addProduct(position?: { longitude: number; latitude: number }) {
-    console.log('add');
     const productData = { ...this.productForm.value };
     productData.position = position ? position : null;
 
